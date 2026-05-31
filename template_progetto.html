@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="it" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automotive Sales Data Analysis - Case Study</title>
+    
+    <!-- Bootstrap 5.3.2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts (Montserrat) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Animate.css per animazioni fluide all'avvio -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+    <style>
+        :root {
+            --primary-accent: #c9ab24; /* Tono Oro/Giallo KPI */
+            --primary-accent-rgb: 201, 171, 36;
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Gestione Variabili Tematiche Personalizzate */
+        [data-bs-theme="dark"] {
+            --body-bg: #121212;
+            --panel-bg: #1e1e1e;
+            --text-main: #f5f5f5;
+            --text-muted: #a0a0a0;
+            --border-color: #2d2d2d;
+            --navbar-bg: rgba(18, 18, 18, 0.8);
+        }
+
+        [data-bs-theme="light"] {
+            --body-bg: #f8f9fa;
+            --panel-bg: #ffffff;
+            --text-main: #212529;
+            --text-muted: #6c757d;
+            --border-color: #dee2e6;
+            --navbar-bg: rgba(248, 249, 250, 0.8);
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--body-bg);
+            color: var(--text-main);
+            transition: var(--transition-smooth);
+            padding-top: 76px;
+        }
+
+        /* NAVBAR TRASPARENTE CON SFOCATURA AL RETRO */
+        .navbar-custom {
+            background-color: transparent;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid transparent;
+            transition: var(--transition-smooth);
+        }
+
+        .navbar-custom.scrolled {
+            background-color: var(--navbar-bg);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav-link {
+            font-weight: 500;
+            color: var(--text-main);
+            transition: var(--transition-smooth);
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-accent) !important;
+        }
+
+        /* CARD STYLE E EFFETTI */
+        .custom-card {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.03);
+            transition: var(--transition-smooth);
+            overflow: hidden;
+        }
+
+        .custom-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+            border-color: rgba(var(--primary-accent-rgb), 0.4);
+        }
+
+        /* KPI CARD ESCLUSIVA */
+        .kpi-card {
+            position: relative;
+        }
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: var(--primary-accent);
+        }
+
+        .kpi-icon {
+            font-size: 2.2rem;
+            color: var(--primary-accent);
+            opacity: 0.9;
+        }
+
+        /* BADGE E TAGS */
+        .tech-badge {
+            background-color: rgba(var(--primary-accent-rgb), 0.1);
+            color: var(--primary-accent);
+            border: 1px solid rgba(var(--primary-accent-rgb), 0.3);
+            padding: 0.4em 0.8em;
+            font-weight: 500;
+            font-size: 0.8rem;
+            border-radius: 20px;
+            transition: var(--transition-smooth);
+        }
+
+        .tech-badge:hover {
+            background-color: var(--primary-accent);
+            color: #000;
+        }
+
+        /* ACCORDION PERSONALIZZATA */
+        .accordion-custom .accordion-item {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            margin-bottom: 15px;
+            border-radius: 10px !important;
+            overflow: hidden;
+        }
+
+        .accordion-custom .accordion-button {
+            background-color: var(--panel-bg);
+            color: var(--text-main);
+            font-weight: 600;
+            border: none;
+            box-shadow: none;
+        }
+
+        .accordion-custom .accordion-button:not(.collapsed) {
+            color: var(--primary-accent);
+            background-color: rgba(var(--primary-accent-rgb), 0.05);
+        }
+
+        .accordion-custom .accordion-button::after {
+            filter: invert(0.5);
+        }
+
+        /* TABELLA DATI PERSONALIZZATA */
+        .table-container {
+            border-radius: 10px;
+            overflow-x: auto;
+        }
+
+        .table-custom {
+            color: var(--text-main);
+            vertical-align: middle;
+        }
+
+        .table-custom th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            background-color: rgba(var(--primary-accent-rgb), 0.05);
+            color: var(--primary-accent);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .table-custom td {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* PAGINAZIONE STILE */
+        .page-link {
+            background-color: var(--panel-bg);
+            border-color: var(--border-color);
+            color: var(--text-main);
+            transition: var(--transition-smooth);
+        }
+
+        .page-link:hover {
+            background-color: var(--primary-accent);
+            border-color: var(--primary-accent);
+            color: #000;
+        }
+
+        .page-item.active .page-link {
+            background-color: var(--primary-accent);
+            border-color: var(--primary-accent);
+            color: #000;
+            font-weight: 600;
+        }
+
+        /* STILE CHART PANEL */
+        .chart-wrapper {
+            position: relative;
+            height: 320px;
+            width: 100%;
+        }
+
+        /* HERO SECTION */
+        .hero-banner {
+            background: linear-gradient(135deg, rgba(var(--primary-accent-rgb), 0.05) 0%, rgba(0,0,0,0.2) 100%);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            padding: 3rem 2rem;
+            margin-bottom: 3rem;
+        }
+
+        /* SCROLLBAR PERSONALIZZATA */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--body-bg);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-accent);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-uppercase d-flex align-items-center gap-2" href="#">
+                <i class="fa-solid fa-car-side text-warning"></i>
+                <span class="text-main" style="letter-spacing: 1px;">Sales <span style="color: var(--primary-accent);">Intelligence</span></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fa-solid fa-bars" style="color: var(--text-main);"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center gap-2">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#dashboard"><i class="fa-solid fa-chart-line me-1"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#case-study"><i class="fa-solid fa-book me-1"></i> Fasi Analisi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#data-explorer"><i class="fa-solid fa-database me-1"></i> Esplora Dati</a>
+                    </li>
+                    <li class="nav-item ms-lg-3">
+                        <button class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center" id="themeToggleBtn" style="width: 40px; height: 40px;" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Cambia Tema">
+                            <i class="fa-solid fa-sun text-warning" id="themeIcon"></i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTAINER GENERALE -->
+    <div class="container py-4">
+
+        <!-- HERO BANNER -->
+        <section class="hero-banner animate__animated animate__fadeIn" id="dashboard">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-3">Automotive <span style="color: var(--primary-accent);">Sales Intelligence</span></h1>
+                    <p class="lead text-muted mb-4">Un'analisi approfondita delle prestazioni di mercato globali, ottimizzando l'elaborazione dei dati ed evidenziando i trend strategici dei principali brand automobilistici.</p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="badge bg-secondary py-2 px-3"><i class="fa-solid fa-code-branch me-1"></i> End-to-End Pipeline</span>
+                        <span class="badge bg-secondary py-2 px-3"><i class="fa-solid fa-chart-pie me-1"></i> Principi di Pareto</span>
+                        <span class="badge bg-secondary py-2 px-3"><i class="fa-solid fa-wand-magic-sparkles me-1"></i> Visual Analytics</span>
+                    </div>
+                </div>
+                <div class="col-lg-4 d-none d-lg-block text-end">
+                    <i class="fa-solid fa-chart-column fa-10x" style="opacity: 0.15; color: var(--primary-accent);"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEZIONE KPI -->
+        <section class="row g-4 mb-5">
+            <div class="col-md-4 animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+                <div class="p-4 custom-card kpi-card d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-muted text-uppercase small fw-bold d-block mb-1">Volumi di Mercato</span>
+                        <h2 class="fw-bold mb-0" style="color: var(--primary-accent);">539.988</h2>
+                        <span class="text-success small fw-medium"><i class="fa-solid fa-circle-check me-1"></i> record validati</span>
+                    </div>
+                    <i class="fa-solid fa-car-side kpi-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-4 animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+                <div class="p-4 custom-card kpi-card d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-muted text-uppercase small fw-bold d-block mb-1">Prezzo Medio Globale</span>
+                        <h2 class="fw-bold mb-0" style="color: var(--primary-accent);">13.961 €</h2>
+                        <span class="text-success small fw-medium"><i class="fa-solid fa-trend-up me-1"></i> Standardizzato</span>
+                    </div>
+                    <i class="fa-solid fa-tags kpi-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-4 animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
+                <div class="p-4 custom-card kpi-card d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-muted text-uppercase small fw-bold d-block mb-1">Concentrazione Mercato</span>
+                        <h2 class="fw-bold mb-0" style="color: var(--primary-accent);">Top 4 Brand</h2>
+                        <span class="text-warning small fw-medium"><i class="fa-solid fa-triangle-exclamation me-1"></i> Generano il 42% del profitto</span>
+                    </div>
+                    <i class="fa-solid fa-chart-pie kpi-icon"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEZIONE INTERATTIVA: CHART & PARETO ANALYSIS -->
+        <section class="row g-4 mb-5">
+            <div class="col-lg-8">
+                <div class="p-4 custom-card h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="fw-bold mb-0"><i class="fa-solid fa-chart-bar text-warning me-2"></i>Distribuzione Profitti (Top 10)</h4>
+                        <span class="badge bg-dark text-light border border-secondary py-2">Filtro Dinamico</span>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="profitChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="p-4 custom-card h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <h4 class="fw-bold mb-3"><i class="fa-solid fa-lightbulb text-warning me-2"></i>Evidenze di Mercato</h4>
+                        <p class="text-muted">La scomposizione cumulativa delle entrate mostra che un ristretto gruppo di costruttori presidia e governa l'andamento del fatturato globale.</p>
+                        
+                        <div class="d-flex align-items-center gap-3 p-3 mb-3 rounded" style="background-color: rgba(var(--primary-accent-rgb), 0.05); border-left: 4px solid var(--primary-accent);">
+                            <i class="fa-solid fa-percent text-warning fs-3"></i>
+                            <div>
+                                <h6 class="fw-bold mb-1">Fatturato Cumulativo</h6>
+                                <p class="small text-muted mb-0">I primi 4 produttori (Ford, Chevrolet, Nissan, Toyota) coprono circa il 42,7% del mercato globale analizzato.</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-3 p-3 rounded" style="background-color: rgba(var(--primary-accent-rgb), 0.05); border-left: 4px solid var(--primary-accent);">
+                            <i class="fa-solid fa-arrows-to-circle text-warning fs-3"></i>
+                            <div>
+                                <h6 class="fw-bold mb-1">Saturazione ad Alta Coda</h6>
+                                <p class="small text-muted mb-0">Raggiungendo la metà esatta della classifica (27° brand), si controlla oltre il 97% del fatturato totale.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-warning w-100 mt-4 py-2 text-dark fw-bold" data-bs-toggle="modal" data-bs-target="#methodologyModal">
+                        <i class="fa-solid fa-circle-info me-1"></i> Visualizza Metodologia
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEZIONE CASO STUDIO ED ACCORDION -->
+        <section class="mb-5" id="case-study">
+            <h3 class="fw-bold mb-4 d-flex align-items-center gap-2">
+                <i class="fa-solid fa-circle-nodes text-warning"></i>
+                Dettagli del Progetto
+            </h3>
+            <div class="accordion accordion-custom" id="projectStepsAccordion">
+                
+                <!-- STEP 1 -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            <i class="fa-solid fa-database text-warning me-2"></i> Fase 1: Data Engineering &amp; Strutturazione
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#projectStepsAccordion">
+                        <div class="accordion-body">
+                            <p>Lo studio si basa sul dataset Vehicle Sales Data disponibile su Kaggle. L'archivio contiene i dati storici delle transazioni automobilistiche, includendo variabili chiave quali marca, modello, anno di immatricolazione, chilometraggio, stato d'uso e prezzo di vendita finale. L'obiettivo primario è stato trasformare il dataset grezzo in un modello dati solido per l'analisi. Utilizzando <strong>MySQL</strong>, ho eseguito operazioni di Data Cleaning, standardizzazione dei formati, utilizzo di CTE e Window functions.</p>
+                            <p>Invece di esportare semplicemente i dati, ho utilizzato delle Viste (Views) SQL specifiche per alimentare la dashboard, calcolando metriche avanzate (es. Quartili di deprezzamento) per garantire massima fluidità in fase di visualizzazione.</p>
+                            <div class="d-flex flex-wrap gap-2 mt-3">
+                                <span class="tech-badge">MySQL</span>
+                                <span class="tech-badge">Data Cleaning</span>
+                                <span class="tech-badge">SQL Views</span>
+                                <span class="tech-badge">Relational Database</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 2 -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            <i class="fa-solid fa-chart-line text-warning me-2"></i> Fase 2: Visual Analytics &amp; Dashboarding
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#projectStepsAccordion">
+                        <div class="accordion-body">
+                            <p>Collegando Tableau direttamente alle viste SQL, ho sviluppato una dashboard interattiva pensata per il management (C-Level). Il design sfrutta un contrasto "Dark Mode" con indicatori dorati per massimizzare la leggibilità cognitiva e ridurre l'affaticamento visivo.</p>
+                            <p>La dashboard implementa azioni di filtro globale incrociate: selezionando uno Stato o un cluster sul diagramma a dispersione, l'intera vista si aggiorna in tempo reale, isolando istantaneamente i KPI rilevanti.</p>
+                            <div class="d-flex flex-wrap gap-2 mt-3">
+                                <span class="tech-badge">Tableau</span>
+                                <span class="tech-badge">Calculated Fields</span>
+                                <span class="tech-badge">Dashboard Actions</span>
+                                <span class="tech-badge">UI/UX Design</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 3 -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            <i class="fa-solid fa-lightbulb text-warning me-2"></i> Fase 3: Business Insights &amp; Storytelling
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#projectStepsAccordion">
+                        <div class="accordion-body">
+                            <p>La visualizzazione dei dati non è il fine, ma il mezzo per prendere decisioni. Dall'analisi esplorativa della dashboard sono emersi i seguenti insight strategici:</p>
+                            <div class="row g-3 mt-1">
+                                <div class="col-md-6">
+                                    <div class="p-3 rounded border border-secondary" style="background-color: rgba(var(--primary-accent-rgb), 0.02)">
+                                        <h6 class="fw-bold"><i class="fa-solid fa-chart-pie text-warning me-1"></i> 1. Il Principio di Pareto nel Profitto</h6>
+                                        <p class="small text-muted mb-0">L'analisi cumulativa rivela che una frazione minoritaria dei brand genera la stragrande maggioranza dei profitti complessivi, suggerendo un focus logistico su questi asset principali.</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-3 rounded border border-secondary" style="background-color: rgba(var(--primary-accent-rgb), 0.02)">
+                                        <h6 class="fw-bold"><i class="fa-solid fa-arrows-spin text-warning me-1"></i> 2. Clusterizzazione Prezzo-Volume</h6>
+                                        <p class="small text-muted mb-0">Lo Scatter Plot identifica chiaramente la concentrazione del mercato nel segmento "Low-Medium Price / High Volume", isolando al contempo le nicchie di lusso per strategie mirate.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ESPLORAZIONE DATI COMPLETA (TABELLA INTERATTIVA) -->
+        <section class="py-4" id="data-explorer">
+            <div class="p-4 custom-card">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+                    <div>
+                        <h4 class="fw-bold mb-1"><i class="fa-solid fa-table text-warning me-2"></i>Dataset Storico Brand</h4>
+                        <p class="text-muted small mb-0">Consultazione dinamica di 54 produttori, con profitti cumulativi e percentuali di penetrazione.</p>
+                    </div>
+                    <div class="w-100 w-md-auto">
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark border-secondary text-muted"><i class="fa-solid fa-magnifying-glass"></i></span>
+                            <input type="text" class="form-control bg-dark border-secondary text-light" id="tableSearchInput" placeholder="Cerca brand...">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="table table-hover table-custom w-100">
+                        <thead>
+                            <tr>
+                                <th>Pos</th>
+                                <th>Marca (Make)</th>
+                                <th class="text-end">Fatturato Totale (€)</th>
+                                <th class="text-end">Totale Progressivo (€)</th>
+                                <th class="text-end">Percentuale Cumulativa (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="brandTableBody">
+                            <!-- Popolato dinamicamente da JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Paginazione Navigabile -->
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 mt-4">
+                    <span class="small text-muted" id="tablePaginationInfo">Visualizzazione record da X a Y</span>
+                    <nav aria-label="Tabella navigazione pagine">
+                        <ul class="pagination pagination-sm mb-0" id="tablePaginationControls">
+                            <!-- Popolato dinamicamente da JavaScript -->
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- MODALE INFORMATIVA METODOLOGIA -->
+    <div class="modal fade" id="methodologyModal" tabindex="-1" aria-labelledby="methodologyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-secondary" style="background-color: var(--panel-bg); color: var(--text-main);">
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title fw-bold" id="methodologyModalLabel">
+                        <i class="fa-solid fa-gears text-warning me-2"></i>Metodologia di Calcolo
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="small text-muted">L'analisi adotta il modello di Pareto per classificare la rilevanza dei brand all'interno del portafoglio globale:</p>
+                    <ul class="small ps-3 text-muted">
+                        <li class="mb-2"><strong>Fatturato Totale:</strong> Somma cumulativa del volume per i prezzi medi storici.</li>
+                        <li class="mb-2"><strong>Totale Progressivo:</strong> Aggregazione incrementale riga per riga ordinata per valore decrescente.</li>
+                        <li class="mb-2"><strong>Cumulative %:</strong> Peso relativo sul fatturato globale aggregato (totale pari a circa 7.39 Miliardi di Euro).</li>
+                    </ul>
+                    <p class="small text-muted mb-0">I dati sono stati normalizzati tramite query strutturate su un'istanza cloud MySQL ed elaborati per una visualizzazione immediata.</p>
+                </div>
+                <div class="modal-footer border-top border-secondary">
+                    <button type="button" class="btn btn-secondary text-dark fw-semibold" style="background-color: var(--primary-accent); border: none;" data-bs-dismiss="modal">Chiudi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="py-4 mt-5 border-top border-secondary text-center">
+        <div class="container">
+            <p class="small text-muted mb-0">&copy; 2026 Case Study: Automotive Sales Intelligence. Tutti i dati sono strutturati a fini analitici.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // DATASET COMPLETO INTEGRATO DA RICHIESTA
+        const dataset = [
+            { make: 'Ford', profit: 1340501092, runningTotal: 1340501092, cumulative: 18.13 },
+            { make: 'Chevrolet', profit: 710367821, runningTotal: 2050868913, cumulative: 27.74 },
+            { make: 'Nissan', profit: 626585571, runningTotal: 2677454484, cumulative: 36.22 },
+            { make: 'Toyota', profit: 482102524, runningTotal: 3159557008, cumulative: 42.74 },
+            { make: 'BMW', profit: 433735838, runningTotal: 3593292846, cumulative: 48.60 },
+            { make: 'Mercedes-Benz', profit: 364952154, runningTotal: 3958245000, cumulative: 53.54 },
+            { make: 'Dodge', profit: 340643594, runningTotal: 4298888594, cumulative: 58.15 },
+            { make: 'Infiniti', profit: 309035340, runningTotal: 4607923934, cumulative: 62.33 },
+            { make: 'Honda', profit: 293808284, runningTotal: 4901732218, cumulative: 66.30 },
+            { make: 'Lexus', profit: 238304365, runningTotal: 5140036583, cumulative: 69.53 },
+            { make: 'Hyundai', profit: 237672136, runningTotal: 5377708719, cumulative: 72.74 },
+            { make: 'Jeep', profit: 226514428, runningTotal: 5604223147, cumulative: 75.80 },
+            { make: 'Kia', profit: 211697713, runningTotal: 5815920860, cumulative: 78.67 },
+            { make: 'Chrysler', profit: 191038815, runningTotal: 6006959675, cumulative: 81.25 },
+            { make: 'GMC', profit: 176244145, runningTotal: 6183203820, cumulative: 83.64 },
+            { make: 'Volkswagen', profit: 116528559, runningTotal: 6299732379, cumulative: 85.21 },
+            { make: 'Audi', profit: 114630025, runningTotal: 6414362404, cumulative: 86.76 },
+            { make: 'Ram', profit: 113564811, runningTotal: 6527927215, cumulative: 88.30 },
+            { make: 'Cadillac', profit: 112439571, runningTotal: 6640366786, cumulative: 89.82 },
+            { make: 'Lincoln', profit: 96020465, runningTotal: 6736387251, cumulative: 91.12 },
+            { make: 'Mazda', profit: 84261991, runningTotal: 6820649242, cumulative: 92.26 },
+            { make: 'Acura', profit: 81504900, runningTotal: 6902154142, cumulative: 93.36 },
+            { make: 'Subaru', profit: 76781936, runningTotal: 6978936078, cumulative: 94.40 },
+            { make: 'Land-Rover', profit: 57924255, runningTotal: 7036860333, cumulative: 95.18 },
+            { make: 'Porsche', profit: 55085001, runningTotal: 7091945334, cumulative: 95.93 },
+            { make: 'Buick', profit: 54030225, runningTotal: 7145975559, cumulative: 96.66 },
+            { make: 'Volvo', profit: 42831052, runningTotal: 7188806611, cumulative: 97.24 },
+            { make: 'Mini', profit: 38905200, runningTotal: 7227711811, cumulative: 97.76 },
+            { make: 'Mitsubishi', profit: 34470958, runningTotal: 7262182769, cumulative: 98.23 },
+            { make: 'Jaguar', profit: 27771926, runningTotal: 7289954695, cumulative: 98.61 },
+            { make: 'Pontiac', profit: 16709701, runningTotal: 7306664396, cumulative: 98.83 },
+            { make: 'Scion', profit: 15862800, runningTotal: 7322527196, cumulative: 99.05 },
+            { make: 'Hummer', profit: 11737838, runningTotal: 7334265034, cumulative: 99.20 },
+            { make: 'Saturn', profit: 9388450, runningTotal: 7343653484, cumulative: 99.33 },
+            { make: 'Fiat', profit: 8873077, runningTotal: 7352526561, cumulative: 99.45 },
+            { make: 'Bentley', profit: 8519150, runningTotal: 7361045711, cumulative: 99.57 },
+            { make: 'Mercury', profit: 7765250, runningTotal: 7368810961, cumulative: 99.67 },
+            { make: 'Maserati', profit: 6050500, runningTotal: 7374861461, cumulative: 99.75 },
+            { make: 'Suzuki', profit: 4178220, runningTotal: 7379039681, cumulative: 99.81 },
+            { make: 'Rolls-Royce', profit: 2609300, runningTotal: 7381648981, cumulative: 99.85 },
+            { make: 'Smart', profit: 2453400, runningTotal: 7384102381, cumulative: 99.88 },
+            { make: 'Ferrari', profit: 2417000, runningTotal: 7386519381, cumulative: 99.91 },
+            { make: 'Saab', profit: 1728450, runningTotal: 7388247831, cumulative: 99.94 },
+            { make: 'Tesla', profit: 1542250, runningTotal: 7389790081, cumulative: 99.96 },
+            { make: 'Aston-Martin', profit: 1370300, runningTotal: 7391160381, cumulative: 99.97 },
+            { make: 'Lamborghini', profit: 450500, runningTotal: 7391610881, cumulative: 99.98 },
+            { make: 'Fisker', profit: 418150, runningTotal: 7392029031, cumulative: 99.99 },
+            { make: 'Oldsmobile', profit: 357850, runningTotal: 7392386881, cumulative: 99.99 },
+            { make: 'Isuzu', profit: 341675, runningTotal: 7392728556, cumulative: 100.00 },
+            { make: 'Plymouth', profit: 196775, runningTotal: 7392925331, cumulative: 100.00 },
+            { make: 'Airstream', profit: 71000, runningTotal: 7392996331, cumulative: 100.00 },
+            { make: 'Lotus', profit: 40800, runningTotal: 7393037131, cumulative: 100.00 },
+            { make: 'Geo', profit: 10050, runningTotal: 7393047181, cumulative: 100.00 },
+            { make: 'Daewoo', profit: 1200, runningTotal: 7393048381, cumulative: 100.00 }
+        ];
+
+        // GESTIONE DELLO STATO DELLA TABELLA
+        let currentFilteredData = [...dataset];
+        let currentPage = 1;
+        const rowsPerPage = 10;
+
+        // INIZIALIZZAZIONE STRUMENTI BOOTSTRAP
+        document.addEventListener('DOMContentLoaded', () => {
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+            
+            // Renderizzazione iniziale
+            renderTable();
+            initCharts();
+        });
+
+        // NAVBAR SCROLL ACTION
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('.navbar-custom');
+            if (window.scrollY > 40) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // MOTORE DI RICERCA INTERATTIVO
+        const searchInput = document.getElementById('tableSearchInput');
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase().trim();
+            currentFilteredData = dataset.filter(item => item.make.toLowerCase().includes(term));
+            currentPage = 1;
+            renderTable();
+        });
+
+        // FUNZIONE DI FORMATTAZIONE VALUTE IN EURO
+        const formatCurrency = (val) => {
+            return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(val);
+        };
+
+        // RENDER DELLA TABELLA CON PAGINAZIONE
+        function renderTable() {
+            const tbody = document.getElementById('brandTableBody');
+            tbody.innerHTML = '';
+
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = Math.min(startIndex + rowsPerPage, currentFilteredData.length);
+            const paginatedItems = currentFilteredData.slice(startIndex, endIndex);
+
+            if (paginatedItems.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">Nessun brand trovato corrispondente alla ricerca</td></tr>`;
+                document.getElementById('tablePaginationInfo').textContent = 'Nessun elemento da mostrare';
+                renderPaginationControls(0);
+                return;
+            }
+
+            paginatedItems.forEach((item, index) => {
+                const globalIndex = startIndex + index + 1;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><span class="badge bg-secondary">${globalIndex}</span></td>
+                    <td class="fw-bold">${item.make}</td>
+                    <td class="text-end">${formatCurrency(item.profit)}</td>
+                    <td class="text-end text-muted">${formatCurrency(item.runningTotal)}</td>
+                    <td class="text-end"><span class="badge ${item.cumulative <= 80 ? 'bg-success text-white' : 'bg-warning text-dark'}">${item.cumulative}%</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('tablePaginationInfo').textContent = `Record visualizzati da ${startIndex + 1} a ${endIndex} di ${currentFilteredData.length}`;
+            renderPaginationControls(currentFilteredData.length);
+        }
+
+        // COSTRUZIONE DEI CONTROLLI DI PAGINAZIONE
+        function renderPaginationControls(totalItems) {
+            const paginationContainer = document.getElementById('tablePaginationControls');
+            paginationContainer.innerHTML = '';
+
+            const totalPages = Math.ceil(totalItems / rowsPerPage);
+            if (totalPages <= 1) return;
+
+            // Pulsante Precedente
+            const prevLi = document.createElement('li');
+            prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            prevLi.innerHTML = `<a class="page-link" href="#data-explorer" onclick="changePage(${currentPage - 1})"><i class="fa-solid fa-chevron-left"></i></a>`;
+            paginationContainer.appendChild(prevLi);
+
+            // Indici Pagine
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    const li = document.createElement('li');
+                    li.className = `page-item ${currentPage === i ? 'active' : ''}`;
+                    li.innerHTML = `<a class="page-link" href="#data-explorer" onclick="changePage(${i})">${i}</a>`;
+                    paginationContainer.appendChild(li);
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    const li = document.createElement('li');
+                    li.className = 'page-item disabled';
+                    li.innerHTML = `<span class="page-link">...</span>`;
+                    paginationContainer.appendChild(li);
+                }
+            }
+
+            // Pulsante Successivo
+            const nextLi = document.createElement('li');
+            nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+            nextLi.innerHTML = `<a class="page-link" href="#data-explorer" onclick="changePage(${currentPage + 1})"><i class="fa-solid fa-chevron-right"></i></a>`;
+            paginationContainer.appendChild(nextLi);
+        }
+
+        window.changePage = function(page) {
+            currentPage = page;
+            renderTable();
+        };
+
+        // COMMUTAZIONE DEL TEMA (CHIARO / SCURO)
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const themeIcon = document.getElementById('themeIcon');
+        const htmlElement = document.documentElement;
+
+        themeToggleBtn.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-bs-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            htmlElement.setAttribute('data-bs-theme', newTheme);
+            
+            if (newTheme === 'dark') {
+                themeIcon.className = 'fa-solid fa-sun text-warning';
+                updateChartTheme(true);
+            } else {
+                themeIcon.className = 'fa-solid fa-moon text-primary';
+                updateChartTheme(false);
+            }
+        });
+
+        // MOTORE DI RENDER GRAFICO (CHART.JS)
+        let profitChart;
+        function initCharts() {
+            const top10 = dataset.slice(0, 10);
+            const labels = top10.map(item => item.make);
+            const profits = top10.map(item => item.profit);
+            const cumulatives = top10.map(item => item.cumulative);
+
+            const ctx = document.getElementById('profitChart').getContext('2d');
+            
+            profitChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Fatturato (€)',
+                            data: profits,
+                            backgroundColor: 'rgba(201, 171, 36, 0.7)',
+                            borderColor: 'rgba(201, 171, 36, 1)',
+                            borderWidth: 1.5,
+                            borderRadius: 4,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Cumulativo (%)',
+                            data: cumulatives,
+                            type: 'line',
+                            borderColor: '#3a86ff',
+                            backgroundColor: '#3a86ff',
+                            borderWidth: 3,
+                            pointBackgroundColor: '#3a86ff',
+                            tension: 0.2,
+                            yAxisID: 'yPercent'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: getThemeTextColor()
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    if (context.datasetIndex === 0) {
+                                        return ' ' + context.dataset.label + ': ' + formatCurrency(context.raw);
+                                    }
+                                    return ' ' + context.dataset.label + ': ' + context.raw + '%';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            grid: {
+                                color: getThemeBorderColor()
+                            },
+                            ticks: {
+                                color: getThemeTextColor(),
+                                callback: function(value) {
+                                    return value / 1e6 + 'M';
+                                }
+                            }
+                        },
+                        yPercent: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            min: 0,
+                            max: 100,
+                            grid: {
+                                drawOnChartArea: false // Evita sovrapposizioni delle linee della griglia
+                            },
+                            ticks: {
+                                color: getThemeTextColor(),
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: getThemeBorderColor()
+                            },
+                            ticks: {
+                                color: getThemeTextColor()
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // HELPER DI COLORI PER LE SCALE DEL GRAFICO
+        function getThemeTextColor() {
+            return document.documentElement.getAttribute('data-bs-theme') === 'dark' ? '#f5f5f5' : '#212529';
+        }
+
+        function getThemeBorderColor() {
+            return document.documentElement.getAttribute('data-bs-theme') === 'dark' ? '#2d2d2d' : '#dee2e6';
+        }
+
+        function updateChartTheme(isDark) {
+            if (!profitChart) return;
+            const textColor = isDark ? '#f5f5f5' : '#212529';
+            const borderColor = isDark ? '#2d2d2d' : '#dee2e6';
+
+            profitChart.options.plugins.legend.labels.color = textColor;
+            profitChart.options.scales.y.ticks.color = textColor;
+            profitChart.options.scales.y.grid.color = borderColor;
+            profitChart.options.scales.yPercent.ticks.color = textColor;
+            profitChart.options.scales.x.ticks.color = textColor;
+            profitChart.options.scales.x.grid.color = borderColor;
+            
+            profitChart.update();
+        }
+    </script>
+</body>
+</html>
