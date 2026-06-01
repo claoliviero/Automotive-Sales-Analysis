@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Automotive Sales Data Analysis - Case Study</title>
+    <title>Analisi Vendite Auto (2014-2015)</title>
     
     <!-- Bootstrap 5.3.2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -13,27 +13,27 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- FontAwesome Icons -->
+    <!-- FontAwesome Icons (include anche i loghi social/brand come GitHub) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Animate.css per animazioni fluide all'avvio -->
+    <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <style>
         :root {
-            --primary-accent: #c9ab24; /* Tono Oro/Giallo KPI */
+            --primary-accent: #c9ab24; /* Giallo/Oro per i punti importanti */
             --primary-accent-rgb: 201, 171, 36;
             --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Gestione Variabili Tematiche Personalizzate */
+        /* Colori per i Temi Chiaro/Scuro */
         [data-bs-theme="dark"] {
             --body-bg: #121212;
             --panel-bg: #1e1e1e;
             --text-main: #f5f5f5;
             --text-muted: #a0a0a0;
             --border-color: #2d2d2d;
-            --navbar-bg: rgba(18, 18, 18, 0.8);
+            --navbar-bg: rgba(18, 18, 18, 0.85);
         }
 
         [data-bs-theme="light"] {
@@ -42,7 +42,7 @@
             --text-main: #212529;
             --text-muted: #6c757d;
             --border-color: #dee2e6;
-            --navbar-bg: rgba(248, 249, 250, 0.8);
+            --navbar-bg: rgba(248, 249, 250, 0.85);
         }
 
         body {
@@ -53,7 +53,7 @@
             padding-top: 76px;
         }
 
-        /* NAVBAR TRASPARENTE CON SFOCATURA AL RETRO */
+        /* NAVBAR CON SFOCATURA SULLO SFONDO */
         .navbar-custom {
             background-color: transparent;
             backdrop-filter: blur(12px);
@@ -78,7 +78,7 @@
             color: var(--primary-accent) !important;
         }
 
-        /* CARD STYLE E EFFETTI */
+        /* CARD */
         .custom-card {
             background-color: var(--panel-bg);
             border: 1px solid var(--border-color);
@@ -89,12 +89,12 @@
         }
 
         .custom-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-4px);
             box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
-            border-color: rgba(var(--primary-accent-rgb), 0.4);
+            border-color: rgba(var(--primary-accent-rgb), 0.35);
         }
 
-        /* KPI CARD ESCLUSIVA */
+        /* KPI CARD */
         .kpi-card {
             position: relative;
         }
@@ -114,7 +114,7 @@
             opacity: 0.9;
         }
 
-        /* BADGE E TAGS */
+        /* BADGES */
         .tech-badge {
             background-color: rgba(var(--primary-accent-rgb), 0.1);
             color: var(--primary-accent);
@@ -131,7 +131,7 @@
             color: #000;
         }
 
-        /* ACCORDION PERSONALIZZATA */
+        /* ACCORDION */
         .accordion-custom .accordion-item {
             background-color: var(--panel-bg);
             border: 1px solid var(--border-color);
@@ -157,7 +157,7 @@
             filter: invert(0.5);
         }
 
-        /* TABELLA DATI PERSONALIZZATA */
+        /* TABELLA DATI */
         .table-container {
             border-radius: 10px;
             overflow-x: auto;
@@ -182,7 +182,7 @@
             border-bottom: 1px solid var(--border-color);
         }
 
-        /* PAGINAZIONE STILE */
+        /* PAGINAZIONE */
         .page-link {
             background-color: var(--panel-bg);
             border-color: var(--border-color);
@@ -203,23 +203,57 @@
             font-weight: 600;
         }
 
-        /* STILE CHART PANEL */
+        /* CHART PANEL */
         .chart-wrapper {
             position: relative;
             height: 320px;
             width: 100%;
         }
 
-        /* HERO SECTION */
-        .hero-banner {
-            background: linear-gradient(135deg, rgba(var(--primary-accent-rgb), 0.05) 0%, rgba(0,0,0,0.2) 100%);
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-            padding: 3rem 2rem;
-            margin-bottom: 3rem;
+        /* BOTTONI PROGETTO */
+        .btn-tableau {
+            background-color: #e97627;
+            color: #ffffff;
+            font-weight: 600;
+            border: none;
+            transition: var(--transition-smooth);
+            padding: 12px 24px;
+            border-radius: 8px;
         }
 
-        /* SCROLLBAR PERSONALIZZATA */
+        .btn-tableau:hover {
+            background-color: #d15f18;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(233, 118, 39, 0.4);
+        }
+
+        .btn-git {
+            background-color: #24292e;
+            color: #ffffff;
+            font-weight: 600;
+            border: 1px solid #444;
+            transition: var(--transition-smooth);
+            padding: 12px 24px;
+            border-radius: 8px;
+        }
+
+        .btn-git:hover {
+            background-color: #1a1e22;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* STILE LOGHI AUTO NELLA TABELLA */
+        .car-logo-img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.2));
+        }
+
+        /* SCROLLBAR */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -243,7 +277,7 @@
         <div class="container">
             <a class="navbar-brand fw-bold text-uppercase d-flex align-items-center gap-2" href="#">
                 <i class="fa-solid fa-car-side text-warning"></i>
-                <span class="text-main" style="letter-spacing: 1px;">Sales <span style="color: var(--primary-accent);">Intelligence</span></span>
+                <span class="text-main" style="letter-spacing: 1px;">Vehicle <span style="color: var(--primary-accent);">Sales</span></span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="fa-solid fa-bars" style="color: var(--text-main);"></i>
@@ -251,10 +285,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center gap-2">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#dashboard"><i class="fa-solid fa-chart-line me-1"></i> Dashboard</a>
+                        <a class="nav-link active" href="#dashboard"><i class="fa-solid fa-chart-line me-1"></i> Progetto</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#case-study"><i class="fa-solid fa-book me-1"></i> Fasi Analisi</a>
+                        <a class="nav-link" href="#case-study"><i class="fa-solid fa-book me-1"></i> Come ho fatto</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#data-explorer"><i class="fa-solid fa-database me-1"></i> Esplora Dati</a>
@@ -272,32 +306,49 @@
     <!-- CONTAINER GENERALE -->
     <div class="container py-4">
 
-        <!-- HERO BANNER -->
-        <section class="hero-banner animate__animated animate__fadeIn" id="dashboard">
-            <div class="row align-items-center">
-                <div class="col-lg-8">
-                    <h1 class="display-4 fw-bold mb-3">Automotive <span style="color: var(--primary-accent);">Sales Intelligence</span></h1>
-                    <p class="lead text-muted mb-4">Un'analisi approfondita delle prestazioni di mercato globali, ottimizzando l'elaborazione dei dati ed evidenziando i trend strategici dei principali brand automobilistici.</p>
+        <!-- HEADER HERO -->
+        <header class="p-4 p-md-5 mb-5 rounded-4 custom-card animate__animated animate__fadeIn" id="dashboard" style="background: linear-gradient(135deg, rgba(var(--primary-accent-rgb), 0.05) 0%, rgba(0,0,0,0.15) 100%);">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-7">
+                    <h1 class="display-4 fw-extrabold mb-2" style="font-weight: 800;">Analisi Vendite <span style="color: var(--primary-accent);">Auto</span></h1>
+                    <p class="lead text-muted mb-4">Ciao! Questo è il mio progetto basato sui dati delle vendite di auto negli anni 2014 e 2015. Sono partito da un archivio di dati grezzi e, passo dopo passo, ho cercato di tirare fuori le informazioni più utili.</p>
                     <div class="d-flex flex-wrap gap-2">
-                        <span class="badge bg-secondary py-2 px-3"><i class="fa-solid fa-code-branch me-1"></i> End-to-End Pipeline</span>
-                        <span class="badge bg-secondary py-2 px-3"><i class="fa-solid fa-chart-pie me-1"></i> Principi di Pareto</span>
-                        <span class="badge bg-secondary py-2 px-3"><i class="fa-solid fa-wand-magic-sparkles me-1"></i> Visual Analytics</span>
+                        <span class="tech-badge"><i class="fa-solid fa-database me-1"></i> 539.988 Transazioni</span>
+                        <span class="tech-badge"><i class="fa-solid fa-clock me-1"></i> Anni 2014-2015</span>
+                        <span class="tech-badge"><i class="fa-solid fa-gears me-1"></i> Tecnologie utilizzate: MySQL e Tableau</span>
                     </div>
                 </div>
-                <div class="col-lg-4 d-none d-lg-block text-end">
-                    <i class="fa-solid fa-chart-column fa-10x" style="opacity: 0.15; color: var(--primary-accent);"></i>
+                <div class="col-lg-5 text-center d-none d-lg-block">
+                    <!-- MINI AUTO IN SVG -->
+                    <svg viewBox="0 0 400 200" width="100%" height="auto" class="opacity-75">
+                        <defs>
+                            <linearGradient id="svgGold" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#b0941e" />
+                                <stop offset="100%" stop-color="#c9ab24" />
+                            </linearGradient>
+                        </defs>
+                        <g stroke-linecap="round" stroke-linejoin="round" fill="none">
+                            <path d="M 50,110 C 80,50 140,45 200,45 C 260,45 310,90 330,110" stroke="#ffffff" stroke-width="4" />
+                            <path d="M 20,125 C 60,125 130,115 210,115 C 290,115 340,125 380,130" stroke="url(#svgGold)" stroke-width="5" />
+                            <circle cx="90" cy="155" r="22" stroke="#ffffff" stroke-width="3" />
+                            <circle cx="290" cy="155" r="22" stroke="#ffffff" stroke-width="3" />
+                            <circle cx="90" cy="155" r="10" stroke="url(#svgGold)" stroke-width="2" />
+                            <circle cx="290" cy="155" r="10" stroke="url(#svgGold)" stroke-width="2" />
+                            <path d="M 90,155 L 290,155" stroke="#ffffff" stroke-width="3" />
+                        </g>
+                    </svg>
                 </div>
             </div>
-        </section>
+        </header>
 
-        <!-- SEZIONE KPI -->
+        <!-- SEZIONE KPI (I NUMERI IMPORTANTI) -->
         <section class="row g-4 mb-5">
             <div class="col-md-4 animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
                 <div class="p-4 custom-card kpi-card d-flex align-items-center justify-content-between">
                     <div>
-                        <span class="text-muted text-uppercase small fw-bold d-block mb-1">Volumi di Mercato</span>
+                        <span class="text-muted text-uppercase small fw-bold d-block mb-1">Transazioni Totali</span>
                         <h2 class="fw-bold mb-0" style="color: var(--primary-accent);">539.988</h2>
-                        <span class="text-success small fw-medium"><i class="fa-solid fa-circle-check me-1"></i> record validati</span>
+                        <span class="text-success small fw-medium"><i class="fa-solid fa-circle-check me-1"></i> Record registrati</span>
                     </div>
                     <i class="fa-solid fa-car-side kpi-icon"></i>
                 </div>
@@ -305,9 +356,9 @@
             <div class="col-md-4 animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
                 <div class="p-4 custom-card kpi-card d-flex align-items-center justify-content-between">
                     <div>
-                        <span class="text-muted text-uppercase small fw-bold d-block mb-1">Prezzo Medio Globale</span>
-                        <h2 class="fw-bold mb-0" style="color: var(--primary-accent);">13.961 €</h2>
-                        <span class="text-success small fw-medium"><i class="fa-solid fa-trend-up me-1"></i> Standardizzato</span>
+                        <span class="text-muted text-uppercase small fw-bold d-block mb-1">Prezzo Medio delle auto</span>
+                        <h2 class="fw-bold mb-0" style="color: var(--primary-accent);">13.691 €</h2>
+                        <span class="text-success small fw-medium"><i class="fa-solid fa-chart-line me-1"></i> Per farsi un'idea</span>
                     </div>
                     <i class="fa-solid fa-tags kpi-icon"></i>
                 </div>
@@ -315,22 +366,56 @@
             <div class="col-md-4 animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
                 <div class="p-4 custom-card kpi-card d-flex align-items-center justify-content-between">
                     <div>
-                        <span class="text-muted text-uppercase small fw-bold d-block mb-1">Concentrazione Mercato</span>
+                        <span class="text-muted text-uppercase small fw-bold d-block mb-1">Le 4 Marche più forti</span>
                         <h2 class="fw-bold mb-0" style="color: var(--primary-accent);">Top 4 Brand</h2>
-                        <span class="text-warning small fw-medium"><i class="fa-solid fa-triangle-exclamation me-1"></i> Generano il 42% del profitto</span>
+                        <span class="text-warning small fw-medium"><i class="fa-solid fa-pie-chart me-1"></i> Fanno il 42,7% del mercato</span>
                     </div>
                     <i class="fa-solid fa-chart-pie kpi-icon"></i>
                 </div>
             </div>
         </section>
 
-        <!-- SEZIONE INTERATTIVA: CHART & PARETO ANALYSIS -->
+        <!-- SEZIONE PER APRIRE I COLLEGAMENTI (TABLEAU & GITHUB) -->
+        <section class="mb-5 animate__animated animate__fadeIn">
+            <div class="p-5 custom-card text-center" style="background: linear-gradient(135deg, rgba(var(--primary-accent-rgb),0.02) 0%, rgba(0,0,0,0.2) 100%);">
+                <div class="d-flex justify-content-center gap-4 mb-4">
+                    <!-- ICONA TABLEAU -->
+                    <svg width="60" height="60" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M50 5v90M5 50h90" stroke="#e97627" stroke-width="6" stroke-linecap="round"/>
+                        <path d="M50 15v70M15 50h70" stroke="#1f77b4" stroke-width="8" stroke-linecap="round"/>
+                        <path d="M50 28v44M28 50h44" stroke="#ff7f0e" stroke-width="10" stroke-linecap="round"/>
+                        <circle cx="50" cy="50" r="8" fill="#e97627"/>
+                        <circle cx="50" cy="15" r="5" fill="#1f77b4"/>
+                        <circle cx="50" cy="85" r="5" fill="#1f77b4"/>
+                        <circle cx="15" cy="50" r="5" fill="#1f77b4"/>
+                        <circle cx="85" cy="50" r="5" fill="#1f77b4"/>
+                    </svg>
+                    <!-- ICONA GITHUB -->
+                    <i class="fa-brands fa-github text-light" style="font-size: 60px;"></i>
+                </div>
+                <h3 class="fw-bold mb-2">Dai un'occhiata al mio progetto!</h3>
+                <p class="text-muted mx-auto mb-4" style="max-width: 600px;">
+                    Ho pubblicato l'intero lavoro sia su <strong>GitHub</strong> (dove trovi tutti i file strutturati e le query di database) che su <strong>Tableau Public</strong> (per navigare tra i grafici e filtri reali). Clicca qui sotto per vederli!
+                </p>
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+                    <!-- Bottone Tableau -->
+                    <a href="https://public.tableau.com/views/VehicleSalesData_17803166690340/Dashboard?:language=it-IT&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link" target="_blank" class="btn btn-tableau btn-lg">
+                        <i class="fa-solid fa-arrow-up-right-from-square me-2"></i> Tableau Public
+                    </a>
+                    <!-- Bottone GitHub -->
+                    <a href="https://github.com/claoliviero/Automotive-Sales-Analysis" target="_blank" class="btn btn-git btn-lg">
+                        <i class="fa-brands fa-github me-2"></i> Repository GitHub
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEZIONE ANALISI DI PARETO CON CHART.JS -->
         <section class="row g-4 mb-5">
             <div class="col-lg-8">
                 <div class="p-4 custom-card h-100">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h4 class="fw-bold mb-0"><i class="fa-solid fa-chart-bar text-warning me-2"></i>Distribuzione Profitti (Top 10)</h4>
-                        <span class="badge bg-dark text-light border border-secondary py-2">Filtro Dinamico</span>
+                        <h4 class="fw-bold mb-0"><i class="fa-solid fa-chart-bar text-warning me-2"></i>Le 10 marche che fanno fare più soldi (2014-2015)</h4>
                     </div>
                     <div class="chart-wrapper">
                         <canvas id="profitChart"></canvas>
@@ -340,63 +425,63 @@
             <div class="col-lg-4">
                 <div class="p-4 custom-card h-100 d-flex flex-column justify-content-between">
                     <div>
-                        <h4 class="fw-bold mb-3"><i class="fa-solid fa-lightbulb text-warning me-2"></i>Evidenze di Mercato</h4>
-                        <p class="text-muted">La scomposizione cumulativa delle entrate mostra che un ristretto gruppo di costruttori presidia e governa l'andamento del fatturato globale.</p>
+                        <h4 class="fw-bold mb-3"><i class="fa-solid fa-lightbulb text-warning me-2"></i>Cosa ho scoperto di interessante</h4>
+                        <p class="text-muted small">I numeri ci dicono delle cose molto chiare su come sono andate le vendite in questi due anni:</p>
                         
                         <div class="d-flex align-items-center gap-3 p-3 mb-3 rounded" style="background-color: rgba(var(--primary-accent-rgb), 0.05); border-left: 4px solid var(--primary-accent);">
-                            <i class="fa-solid fa-percent text-warning fs-3"></i>
+                            <i class="fa-solid fa-scale-unbalanced text-warning fs-3"></i>
                             <div>
-                                <h6 class="fw-bold mb-1">Fatturato Cumulativo</h6>
-                                <p class="small text-muted mb-0">I primi 4 produttori (Ford, Chevrolet, Nissan, Toyota) coprono circa il 42,7% del mercato globale analizzato.</p>
+                                <h6 class="fw-bold mb-1">Pochi brand fanno quasi tutto</h6>
+                                <p class="small text-muted mb-0">Solo 4 marche (Ford, Chevrolet, Nissan e Toyota) si portano a casa quasi la metà dei guadagni di tutto il mercato (il <strong>42,74%</strong>!).</p>
                             </div>
                         </div>
 
                         <div class="d-flex align-items-center gap-3 p-3 rounded" style="background-color: rgba(var(--primary-accent-rgb), 0.05); border-left: 4px solid var(--primary-accent);">
-                            <i class="fa-solid fa-arrows-to-circle text-warning fs-3"></i>
+                            <i class="fa-solid fa-arrow-trend-up text-warning fs-3"></i>
                             <div>
-                                <h6 class="fw-bold mb-1">Saturazione ad Alta Coda</h6>
-                                <p class="small text-muted mb-0">Raggiungendo la metà esatta della classifica (27° brand), si controlla oltre il 97% del fatturato totale.</p>
+                                <h6 class="fw-bold mb-1">La soglia dell'80%</h6>
+                                <p class="small text-muted mb-0">Se prendiamo le prime 13 marche della classifica, copriamo l'80% di tutte le vendite. Chi viene dopo fa solo piccoli numeri.</p>
                             </div>
                         </div>
                     </div>
                     
                     <button class="btn btn-warning w-100 mt-4 py-2 text-dark fw-bold" data-bs-toggle="modal" data-bs-target="#methodologyModal">
-                        <i class="fa-solid fa-circle-info me-1"></i> Visualizza Metodologia
+                        <i class="fa-solid fa-circle-info me-1"></i> Come sono fatti i calcoli
                     </button>
                 </div>
             </div>
         </section>
 
-        <!-- SEZIONE CASO STUDIO ED ACCORDION -->
+        <!-- SEZIONE COME HO FATTO IL LAVORO (ACCORDION) -->
         <section class="mb-5" id="case-study">
             <h3 class="fw-bold mb-4 d-flex align-items-center gap-2">
                 <i class="fa-solid fa-circle-nodes text-warning"></i>
-                Dettagli del Progetto
+                Le Fasi del Progetto
             </h3>
             <div class="accordion accordion-custom" id="projectStepsAccordion">
                 
-                <!-- STEP 1 -->
+                <!-- FASE 1 -->
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingOne">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            <i class="fa-solid fa-database text-warning me-2"></i> Fase 1: Data Engineering &amp; Strutturazione
+                            <i class="fa-solid fa-database text-warning me-2"></i> Fase 1: Data Cleaning &amp; Strutturazione
                         </button>
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#projectStepsAccordion">
                         <div class="accordion-body">
-                            <p>Lo studio si basa sul dataset Vehicle Sales Data disponibile su Kaggle. L'archivio contiene i dati storici delle transazioni automobilistiche, includendo variabili chiave quali marca, modello, anno di immatricolazione, chilometraggio, stato d'uso e prezzo di vendita finale. L'obiettivo primario è stato trasformare il dataset grezzo in un modello dati solido per l'analisi. Utilizzando <strong>MySQL</strong>, ho eseguito operazioni di Data Cleaning, standardizzazione dei formati, utilizzo di CTE e Window functions.</p>
+                            <p>Lo studio si basa sul dataset Vehicle Sales Data disponibile su Kaggle. L'archivio contiene i dati storici delle transazioni automobilistiche, includendo variabili chiave quali marca, modello, anno di immatricolazione, chilometraggio, stato d'uso e prezzo di vendita finale. L'obiettivo primario è stato trasformare il dataset grezzo in un modello dati solido per l'analisi. Utilizzando MySQL, ho eseguito operazioni di Data Cleaning, standardizzazione dei formati, utilizzo di CTE e Window functions.</p>
                             <p>Invece di esportare semplicemente i dati, ho utilizzato delle Viste (Views) SQL specifiche per alimentare la dashboard, calcolando metriche avanzate (es. Quartili di deprezzamento) per garantire massima fluidità in fase di visualizzazione.</p>
                             <div class="d-flex flex-wrap gap-2 mt-3">
                                 <span class="tech-badge">MySQL</span>
-                                <span class="tech-badge">Data Cleaning</span>
-                                <span class="tech-badge">SQL Views</span>
-                                <span class="tech-badge">Relational Database</span>
+                                <span class="tech-badge">Pulizia Dati</span>
+                                <span class="tech-badge">Viste SQL</span>
+                                <span class="tech-badge">Anni 2014-2015</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- STEP 2 -->
+                <!-- FASE 2 -->
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingTwo">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
@@ -405,39 +490,38 @@
                     </h2>
                     <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#projectStepsAccordion">
                         <div class="accordion-body">
-                            <p>Collegando Tableau direttamente alle viste SQL, ho sviluppato una dashboard interattiva pensata per il management (C-Level). Il design sfrutta un contrasto "Dark Mode" con indicatori dorati per massimizzare la leggibilità cognitiva e ridurre l'affaticamento visivo.</p>
-                            <p>La dashboard implementa azioni di filtro globale incrociate: selezionando uno Stato o un cluster sul diagramma a dispersione, l'intera vista si aggiorna in tempo reale, isolando istantaneamente i KPI rilevanti.</p>
+                            <p>Una volta sistemati i dati con SQL, ho collegato tutto a Tableau per creare una dashboard interattiva. Ho cercato di progettarla pensando a chi deve prendere decisioni in azienda, puntando su una grafica scura con tocchi dorati: è più riposante per gli occhi ed è molto pulita da leggere.</p>
+                            <p>La comodità di questo lavoro è che è tutto collegato in tempo reale. Se filtri per uno Stato o clicchi su un gruppo specifico di auto, l'intera pagina si aggiorna da sola mostrandoti solo quello che ti serve in quel momento.</p>
                             <div class="d-flex flex-wrap gap-2 mt-3">
                                 <span class="tech-badge">Tableau</span>
-                                <span class="tech-badge">Calculated Fields</span>
-                                <span class="tech-badge">Dashboard Actions</span>
-                                <span class="tech-badge">UI/UX Design</span>
+                                <span class="tech-badge">Design dei Grafici</span>
+                                <span class="tech-badge">Filtri in tempo reale</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- STEP 3 -->
+                <!-- FASE 3 -->
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingThree">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                            <i class="fa-solid fa-lightbulb text-warning me-2"></i> Fase 3: Business Insights &amp; Storytelling
+                            <i class="fa-solid fa-lightbulb text-warning me-2"></i> Fase 3: Business Insights (Le conclusioni)
                         </button>
                     </h2>
                     <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#projectStepsAccordion">
                         <div class="accordion-body">
-                            <p>La visualizzazione dei dati non è il fine, ma il mezzo per prendere decisioni. Dall'analisi esplorativa della dashboard sono emersi i seguenti insight strategici:</p>
+                            <p>I grafici sono carini, ma l'obiettivo vero è capire cosa ci dicono i numeri. Ecco i punti chiave che ho trovato:</p>
                             <div class="row g-3 mt-1">
                                 <div class="col-md-6">
                                     <div class="p-3 rounded border border-secondary" style="background-color: rgba(var(--primary-accent-rgb), 0.02)">
-                                        <h6 class="fw-bold"><i class="fa-solid fa-chart-pie text-warning me-1"></i> 1. Il Principio di Pareto nel Profitto</h6>
-                                        <p class="small text-muted mb-0">L'analisi cumulativa rivela che una frazione minoritaria dei brand genera la stragrande maggioranza dei profitti complessivi, suggerendo un focus logistico su questi asset principali.</p>
+                                        <h6 class="fw-bold"><i class="fa-solid fa-percent text-warning me-1"></i> I Big del Mercato</h6>
+                                        <p class="small text-muted mb-0">La stragrande maggioranza dei profitti arriva da pochissime marche. Concentrarsi su Ford, Chevrolet, Nissan e Toyota a livello logistico e di marketing è la scelta più logica per l'azienda.</p>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="p-3 rounded border border-secondary" style="background-color: rgba(var(--primary-accent-rgb), 0.02)">
-                                        <h6 class="fw-bold"><i class="fa-solid fa-arrows-spin text-warning me-1"></i> 2. Clusterizzazione Prezzo-Volume</h6>
-                                        <p class="small text-muted mb-0">Lo Scatter Plot identifica chiaramente la concentrazione del mercato nel segmento "Low-Medium Price / High Volume", isolando al contempo le nicchie di lusso per strategie mirate.</p>
+                                        <h6 class="fw-bold"><i class="fa-solid fa-arrows-spin text-warning me-1"></i> I Clienti cercano la convenienza</h6>
+                                        <p class="small text-muted mb-0">La maggior parte del volume di vendite si concentra nella fascia di prezzo medio-bassa. Le auto di lusso vendono poco ma a prezzi alti, mentre il vero motore economico è la classe media.</p>
                                     </div>
                                 </div>
                             </div>
@@ -447,18 +531,18 @@
             </div>
         </section>
 
-        <!-- ESPLORAZIONE DATI COMPLETA (TABELLA INTERATTIVA) -->
+        <!-- ESPLORAZIONE DATI COMPLETA (TABELLA INTERATTIVA DEI 54 BRAND) -->
         <section class="py-4" id="data-explorer">
             <div class="p-4 custom-card">
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
                     <div>
-                        <h4 class="fw-bold mb-1"><i class="fa-solid fa-table text-warning me-2"></i>Dataset Storico Brand</h4>
-                        <p class="text-muted small mb-0">Consultazione dinamica di 54 produttori, con profitti cumulativi e percentuali di penetrazione.</p>
+                        <h4 class="fw-bold mb-1"><i class="fa-solid fa-table text-warning me-2"></i>La classifica completa dei Brand (2014-2015)</h4>
+                        <p class="text-muted small mb-0">Qui sotto puoi esplorare liberamente tutti i 54 brand che ho analizzato nel dataset, ordinati per fatturato totale.</p>
                     </div>
                     <div class="w-100 w-md-auto">
                         <div class="input-group">
                             <span class="input-group-text bg-dark border-secondary text-muted"><i class="fa-solid fa-magnifying-glass"></i></span>
-                            <input type="text" class="form-control bg-dark border-secondary text-light" id="tableSearchInput" placeholder="Cerca brand...">
+                            <input type="text" class="form-control bg-dark border-secondary text-light" id="tableSearchInput" placeholder="Cerca una marca...">
                         </div>
                     </div>
                 </div>
@@ -480,12 +564,12 @@
                     </table>
                 </div>
 
-                <!-- Paginazione Navigabile -->
+                <!-- Paginazione -->
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 mt-4">
-                    <span class="small text-muted" id="tablePaginationInfo">Visualizzazione record da X a Y</span>
-                    <nav aria-label="Tabella navigazione pagine">
+                    <span class="small text-muted" id="tablePaginationInfo">Visualizzazione elementi</span>
+                    <nav aria-label="Navigazione tabella">
                         <ul class="pagination pagination-sm mb-0" id="tablePaginationControls">
-                            <!-- Popolato dinamicamente da JavaScript -->
+                            <!-- Popolato dinamicamente -->
                         </ul>
                     </nav>
                 </div>
@@ -500,21 +584,20 @@
             <div class="modal-content border-secondary" style="background-color: var(--panel-bg); color: var(--text-main);">
                 <div class="modal-header border-bottom border-secondary">
                     <h5 class="modal-title fw-bold" id="methodologyModalLabel">
-                        <i class="fa-solid fa-gears text-warning me-2"></i>Metodologia di Calcolo
+                        <i class="fa-solid fa-gears text-warning me-2"></i>Come sono fatti i calcoli
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="small text-muted">L'analisi adotta il modello di Pareto per classificare la rilevanza dei brand all'interno del portafoglio globale:</p>
+                    <p class="small text-muted">Ecco cosa significano i numeri che vedi in tabella:</p>
                     <ul class="small ps-3 text-muted">
-                        <li class="mb-2"><strong>Fatturato Totale:</strong> Somma cumulativa del volume per i prezzi medi storici.</li>
-                        <li class="mb-2"><strong>Totale Progressivo:</strong> Aggregazione incrementale riga per riga ordinata per valore decrescente.</li>
-                        <li class="mb-2"><strong>Cumulative %:</strong> Peso relativo sul fatturato globale aggregato (totale pari a circa 7.39 Miliardi di Euro).</li>
+                        <li class="mb-2"><strong>Fatturato Totale:</strong> Quanti soldi sono stati mossi in totale dalle vendite di quella marca nel 2014 e 2015.</li>
+                        <li class="mb-2"><strong>Totale Progressivo:</strong> La somma che si accumula marca dopo marca (partendo da quella che vende di più).</li>
+                        <li class="mb-2"><strong>Percentuale Cumulativa:</strong> Quanto incide quella marca più tutte quelle precedenti sul totale del mercato (~7,39 miliardi di euro complessivi).</li>
                     </ul>
-                    <p class="small text-muted mb-0">I dati sono stati normalizzati tramite query strutturate su un'istanza cloud MySQL ed elaborati per una visualizzazione immediata.</p>
                 </div>
                 <div class="modal-footer border-top border-secondary">
-                    <button type="button" class="btn btn-secondary text-dark fw-semibold" style="background-color: var(--primary-accent); border: none;" data-bs-dismiss="modal">Chiudi</button>
+                    <button type="button" class="btn btn-secondary text-dark fw-semibold" style="background-color: var(--primary-accent); border: none;" data-bs-dismiss="modal">Ho capito</button>
                 </div>
             </div>
         </div>
@@ -523,7 +606,7 @@
     <!-- FOOTER -->
     <footer class="py-4 mt-5 border-top border-secondary text-center">
         <div class="container">
-            <p class="small text-muted mb-0">&copy; 2026 Case Study: Automotive Sales Intelligence. Tutti i dati sono strutturati a fini analitici.</p>
+            <p class="small text-muted mb-0">&copy; Analisi Vendite Auto (Anni 2014-2015). Progetto creato e organizzato per la condivisione pubblica.</p>
         </div>
     </footer>
 
@@ -534,7 +617,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        // DATASET COMPLETO INTEGRATO DA RICHIESTA
+        // DATASET DEI 54 BRAND (2014-2015)
         const dataset = [
             { make: 'Ford', profit: 1340501092, runningTotal: 1340501092, cumulative: 18.13 },
             { make: 'Chevrolet', profit: 710367821, runningTotal: 2050868913, cumulative: 27.74 },
@@ -592,22 +675,41 @@
             { make: 'Daewoo', profit: 1200, runningTotal: 7393048381, cumulative: 100.00 }
         ];
 
-        // GESTIONE DELLO STATO DELLA TABELLA
+        // FUNZIONE PER TROVARE IL LOGO DELL'AUTO DAL REPO GITHUB DEI LOGHI
+        function getLogoUrl(make) {
+            let name = make.toLowerCase().trim();
+            // Rimpiazza gli spazi e caratteri speciali per mapparli correttamente con l'archivio dei loghi
+            name = name.replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+            
+            // Correzioni per nomi complessi mappati nell'archivio filippofonseca/car-logos
+            const exceptions = {
+                'mercedes-benz': 'mercedes',
+                'land-rover': 'land_rover',
+                'rolls-royce': 'rolls_royce',
+                'aston-martin': 'aston_martin'
+            };
+            
+            if (exceptions[name]) {
+                name = exceptions[name];
+            }
+            
+            return `https://raw.githubusercontent.com/filippofonseca/car-logos/master/logos/${name}.png`;
+        }
+
+        // STATO INTERNO DELLA TABELLA
         let currentFilteredData = [...dataset];
         let currentPage = 1;
         const rowsPerPage = 10;
 
-        // INIZIALIZZAZIONE STRUMENTI BOOTSTRAP
         document.addEventListener('DOMContentLoaded', () => {
             const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             tooltipTriggerList.map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
             
-            // Renderizzazione iniziale
             renderTable();
             initCharts();
         });
 
-        // NAVBAR SCROLL ACTION
+        // EFFETTO NAVBAR SCROLL
         window.addEventListener('scroll', () => {
             const nav = document.querySelector('.navbar-custom');
             if (window.scrollY > 40) {
@@ -617,7 +719,7 @@
             }
         });
 
-        // MOTORE DI RICERCA INTERATTIVO
+        // RICERCA BRAND
         const searchInput = document.getElementById('tableSearchInput');
         searchInput.addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase().trim();
@@ -626,12 +728,12 @@
             renderTable();
         });
 
-        // FUNZIONE DI FORMATTAZIONE VALUTE IN EURO
+        // FORMATTAZIONE SOLDI
         const formatCurrency = (val) => {
             return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(val);
         };
 
-        // RENDER DELLA TABELLA CON PAGINAZIONE
+        // DISEGNA TABELLA CON PAGINE E LOGHI
         function renderTable() {
             const tbody = document.getElementById('brandTableBody');
             tbody.innerHTML = '';
@@ -641,8 +743,8 @@
             const paginatedItems = currentFilteredData.slice(startIndex, endIndex);
 
             if (paginatedItems.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">Nessun brand trovato corrispondente alla ricerca</td></tr>`;
-                document.getElementById('tablePaginationInfo').textContent = 'Nessun elemento da mostrare';
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">Nessun brand trovato con questo nome</td></tr>`;
+                document.getElementById('tablePaginationInfo').textContent = 'Nessun elemento';
                 renderPaginationControls(0);
                 return;
             }
@@ -650,9 +752,19 @@
             paginatedItems.forEach((item, index) => {
                 const globalIndex = startIndex + index + 1;
                 const tr = document.createElement('tr');
+                
+                // Url per caricare il logo
+                const logoUrl = getLogoUrl(item.make);
+
                 tr.innerHTML = `
                     <td><span class="badge bg-secondary">${globalIndex}</span></td>
-                    <td class="fw-bold">${item.make}</td>
+                    <td class="fw-bold">
+                        <div class="d-flex align-items-center gap-2">
+                            <!-- Se il logo non esiste sul server, onerror lo nasconde all'istante lasciando solo il testo -->
+                            <img src="${logoUrl}" onerror="this.style.display='none'" class="car-logo-img" alt="">
+                            <span>${item.make}</span>
+                        </div>
+                    </td>
                     <td class="text-end">${formatCurrency(item.profit)}</td>
                     <td class="text-end text-muted">${formatCurrency(item.runningTotal)}</td>
                     <td class="text-end"><span class="badge ${item.cumulative <= 80 ? 'bg-success text-white' : 'bg-warning text-dark'}">${item.cumulative}%</span></td>
@@ -660,11 +772,11 @@
                 tbody.appendChild(tr);
             });
 
-            document.getElementById('tablePaginationInfo').textContent = `Record visualizzati da ${startIndex + 1} a ${endIndex} di ${currentFilteredData.length}`;
+            document.getElementById('tablePaginationInfo').textContent = `Stai vedendo dal numero ${startIndex + 1} al ${endIndex} (su un totale di ${currentFilteredData.length} brand)`;
             renderPaginationControls(currentFilteredData.length);
         }
 
-        // COSTRUZIONE DEI CONTROLLI DI PAGINAZIONE
+        // PAGINAZIONE
         function renderPaginationControls(totalItems) {
             const paginationContainer = document.getElementById('tablePaginationControls');
             paginationContainer.innerHTML = '';
@@ -672,13 +784,11 @@
             const totalPages = Math.ceil(totalItems / rowsPerPage);
             if (totalPages <= 1) return;
 
-            // Pulsante Precedente
             const prevLi = document.createElement('li');
             prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
             prevLi.innerHTML = `<a class="page-link" href="#data-explorer" onclick="changePage(${currentPage - 1})"><i class="fa-solid fa-chevron-left"></i></a>`;
             paginationContainer.appendChild(prevLi);
 
-            // Indici Pagine
             for (let i = 1; i <= totalPages; i++) {
                 if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
                     const li = document.createElement('li');
@@ -693,7 +803,6 @@
                 }
             }
 
-            // Pulsante Successivo
             const nextLi = document.createElement('li');
             nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
             nextLi.innerHTML = `<a class="page-link" href="#data-explorer" onclick="changePage(${currentPage + 1})"><i class="fa-solid fa-chevron-right"></i></a>`;
@@ -705,7 +814,7 @@
             renderTable();
         };
 
-        // COMMUTAZIONE DEL TEMA (CHIARO / SCURO)
+        // TEMA CHIARO/SCURO
         const themeToggleBtn = document.getElementById('themeToggleBtn');
         const themeIcon = document.getElementById('themeIcon');
         const htmlElement = document.documentElement;
@@ -724,7 +833,7 @@
             }
         });
 
-        // MOTORE DI RENDER GRAFICO (CHART.JS)
+        // GRAFICO CHART.JS
         let profitChart;
         function initCharts() {
             const top10 = dataset.slice(0, 10);
@@ -740,7 +849,7 @@
                     labels: labels,
                     datasets: [
                         {
-                            label: 'Fatturato (€)',
+                            label: 'Fatturato totale (€)',
                             data: profits,
                             backgroundColor: 'rgba(201, 171, 36, 0.7)',
                             borderColor: 'rgba(201, 171, 36, 1)',
@@ -749,14 +858,14 @@
                             yAxisID: 'y'
                         },
                         {
-                            label: 'Cumulativo (%)',
+                            label: 'Peso cumulativo (%)',
                             data: cumulatives,
                             type: 'line',
                             borderColor: '#3a86ff',
                             backgroundColor: '#3a86ff',
                             borderWidth: 3,
                             pointBackgroundColor: '#3a86ff',
-                            tension: 0.2,
+                            tension: 0.15,
                             yAxisID: 'yPercent'
                         }
                     ]
@@ -792,7 +901,7 @@
                             ticks: {
                                 color: getThemeTextColor(),
                                 callback: function(value) {
-                                    return value / 1e6 + 'M';
+                                    return value / 1e6 + ' mln';
                                 }
                             }
                         },
@@ -803,7 +912,7 @@
                             min: 0,
                             max: 100,
                             grid: {
-                                drawOnChartArea: false // Evita sovrapposizioni delle linee della griglia
+                                drawOnChartArea: false
                             },
                             ticks: {
                                 color: getThemeTextColor(),
@@ -825,7 +934,6 @@
             });
         }
 
-        // HELPER DI COLORI PER LE SCALE DEL GRAFICO
         function getThemeTextColor() {
             return document.documentElement.getAttribute('data-bs-theme') === 'dark' ? '#f5f5f5' : '#212529';
         }
