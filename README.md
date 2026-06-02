@@ -306,5 +306,108 @@ order by sellingprice asc ;
 
 ```
 
+**Data Analysis (EDA) & Business Queries** : Prima di creare le viste finali per Tableau, ho strutturato l'analisi in vari Task per fare un sanity check dei dati, scovare anomalie e iniziare a estrarre i primi veri insight di business.
+
+*Task 1.1: La Caccia agli Outliers (Sanity Check)*: <br>
+Per prima cosa ho verificato la qualità dei dati. Ho cercato anomalie evidenti nel chilometraggio (auto sotto le 50 miglia o sopra le 300.000) e nei prezzi di vendita assurdi (sotto i 500$ o sopra i 150.000$).
+
+
+```sql
+
+select year,make,model,odometer,mmr from vehicle_sales_clean 
+where odometer < 50 or odometer >300000 
+order by odometer asc ;
+
+#Scrivi un'altra query per trovare i prezzi di vendita assurdi (es. sellingprice sotto i 500$ o sopra i 100.000$).
+select year,make,model,odometer,mmr,sellingprice from vehicle_sales_clean
+where sellingprice <500 or sellingprice >150000
+order by sellingprice asc ,odometer asc ;
+
+Select year,
+sum(case when odometer = 1 then 1 else 0 end) as conteggio_1km,
+sum(case when odometer > 900000  then 1 else 0 end) as conteggio_999999km
+from vehicle_sales_clean
+group by 1 order by year;
+-- totale 1154 auto che hanno 1 km e piu di 900000 km su un totale di 540064, ovvero il 2%
+
+```
+
+*Task 1.2: Segmentazione del Mercato (Fasce di Prezzo)*: <br>
+Ho diviso le auto in tre macro-fasce usando la logica del CASE WHEN: Low Cost (< 10k$), Mid Range (tra 10k$ e 39k$) e Premium (sopra i 40k$).
+
+```sql
+
+select year,make,model,condizione,sellingprice,
+case
+	when sellingprice < 10000 then 'Low cost'
+    when sellingprice between 10000 and 39999 then 'Mid range'
+    else 'Premium'
+end as price_ranges 
+from vehicle_sales_clean
+order by price_ranges desc ,sellingprice desc ;
+
+```
+
+*Task 1.3: Volumi e Valori per Brand*: <br>
+Quali sono i marchi che muovono più soldi e più veicoli? Ho raggruppato i dati per marca, calcolato le auto vendute, il prezzo medio (arrotondato) e il fatturato totale, filtrando solo i brand con più di 1.000 vendite.
+
+
+```sql
+
+select make,count(*) as cars_sold, round(avg(sellingprice),0) as avg_sellingprince,sum(sellingprice) as total_sales_prices
+from vehicle_sales_clean
+group by 1
+having cars_sold > 1000 
+order by total_sales_prices desc;
+
+```
+
+**📈 LIVELLO 2: Analisi di Performance e Geografica** :
+
+*Task 2.1:(MMR vs Selling Price)*: <br>
+L'MMR (Manheim Market Report) indica il valore stimato dell'auto. Chi siamo riusciti a vendere sopra il valore di mercato e chi abbiamo dovuto svendere?
+
+
+```sql
+
+select make,count(*) as cars_sold,(avg(sellingprice-mmr)) as avg_margin
+from vehicle_sales_clean
+group by 1
+having cars_sold >500
+order by avg_margin desc ;
+
+```
+
+*Task 2.2: Le Roccaforti (Analisi Geografica)*: <br>
+Mappiamo le performance degli hub commerciali: ecco i top 5 Stati per fatturato totale, con tanto di condizione media delle auto vendute.
+
+```sql
+select state,count(*) as number_of_sales,sum(sellingprice) as total_turnover,round(avg(condizione),1) as avg_condition
+from vehicle_sales_clean
+group by 1
+order by total_turnover desc 
+limit 5 ;
+
+```
+
+*Task 2.3: Focus sui Top Seller (Il caso Ford)*: <br>
+Visto che dal Task 1.3 è emerso che Ford è il nostro brand leader assoluto con oltre 1.3 miliardi di fatturato, ho isolato la top 10 dei modelli Ford più venduti in azienda usando una CTE.
+
+```sql
+
+with general_data as
+(select make,count(*) as cars_sold, model, round(avg(sellingprice),0) as avg_sellingprice,sum(sellingprice) as total_sales_prices
+from vehicle_sales_clean
+group by make,model
+having cars_sold > 1000)
+select make,model,cars_sold,avg_sellingprice,total_sales_prices from general_data
+where make = 'Ford'
+order by cars_sold desc 
+limit 10 ;
+
+```
+
+
+
 
 
