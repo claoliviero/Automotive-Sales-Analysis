@@ -1,8 +1,9 @@
-
 <p align="center"> 
-<i> Progetto - Vehicle Sales Data </i> <br> <sub>
+<i><b>Progetto - Vehicle Sales Data</b></i> <br>
 <img width="50" height="50" alt="image" src="https://github.com/user-attachments/assets/94d594d8-788e-40fd-86b4-22d2ac8145dd" /> 
-<img width="50" height="50" alt="image" <img width="30 height="30" alt="image" src="https://github.com/user-attachments/assets/5d6ca38c-dbbd-41d9-9cb3-49f644f50c7b" />
+<img width="50" height="50" alt="image" src="https://github.com/user-attachments/assets/5d6ca38c-dbbd-41d9-9cb3-49f644f50c7b" />
+</p>
+
 
 # Contesto e Obiettivo
 Il mercato automotive è caratterizzato da un'elevata competitività e da volumi massicci di transazioni quotidiane. In questo scenario, i decisori aziendalimsi trovano spesso a dover navigare all'interno di database enormi e disgiunti, rendendo complesso isolare i trend reali di profittabilità, monitorare la distribuzione geografica delle vendite e identificare tempestivamente le combinazioni ottimali tra volumi di stock e prezzi di listino.
