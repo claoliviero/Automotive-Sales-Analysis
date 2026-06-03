@@ -699,7 +699,7 @@ Una volta finito tutto  su MySQL, ho spostato il progetto su **Tableau Desktop**
 #### 3. Sviluppo delle KPI Cards Principali (Executive Overview)
 * **Azione:** Ho posizionato nella parte alta della dashboard i tre indicatori chiave di prestazione (KPI) aziendali:
     * **Volumi Totali:** Conteggio esatto delle transazioni attive (**539.988**).
-    * **Prezzo Medio Ponderato Reale:** Calcolato tramite formula DAX per superare le distorsioni della media semplice (**13.691 €**).
+    * **Prezzo Medio Ponderato Reale:** Calcolato tramite campi calcolati per superare le distorsioni della media semplice (**13.691 €**).
  
 #### 4. Costruzione del Core Analitico (Mappa & Scatter Plot)
 * **Mappa Geografica Interattiva:** Ho inserito una mappa del mercato nordamericano per visualizzare la distribuzione geografica delle vendite. La mappa è stata configurata non solo come grafico passivo, ma come un vero e proprio "pannello di comando" (Filtro di origine globale).
