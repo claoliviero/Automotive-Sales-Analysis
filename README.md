@@ -6,7 +6,7 @@
 
 
 # Contesto e Obiettivo
-Il mercato automotive è caratterizzato da un'elevata competitività e da volumi massicci di transazioni quotidiane. In questo scenario, i decisori aziendalimsi trovano spesso a dover navigare all'interno di database enormi e disgiunti, rendendo complesso isolare i trend reali di profittabilità, monitorare la distribuzione geografica delle vendite e identificare tempestivamente le combinazioni ottimali tra volumi di stock e prezzi di listino.
+Il mercato automotive è caratterizzato da un'elevata competitività e da volumi massicci di transazioni quotidiane. In questo scenario, le decisioni aziendali trovano spesso a dover navigare all'interno di database enormi e disgiunti, rendendo complesso isolare i trend reali di profittabilità, monitorare la distribuzione geografica delle vendite e identificare tempestivamente le combinazioni ottimali tra volumi di stock e prezzi di listino.
 
 L'obiettivo di questo progetto è trasformare un set di dati grezzo e non ottimizzato in una piattaforma di Sales Intelligence scalabile, efficiente e impattante visimamente.
 
@@ -284,7 +284,7 @@ SET saledate = STR_TO_DATE(SUBSTRING(saledate, 5, 11), '%b %d %Y');
 ALTER TABLE vehicle_sales_clean
 MODIFY COLUMN saledate DATE;
 
--- andiamo a visualizzar la nuova tabella con le modifiche apportate 
+-- andiamo a visualizzare la nuova tabella con le modifiche apportate 
 select*from vehicle_sales_clean;
 ```
 
@@ -715,7 +715,7 @@ Una volta finito tutto  su MySQL, ho spostato il progetto su **Tableau Desktop**
 * **Azione:**  Anche qui per variare la visualizzazione , ho implementato l'estensione nativa per generare un **Polar area** dinamico focalizzato sulle auto vendute da ogni Stato e il relativo prezzo medio di vendita.
 
 #### 7. Debugging delle Estensioni Web e Pubblicazione Finale
-* **Deployment:** Ho pubblicato la cartella di lavoro su **Tableau Public**, configurando correttamente i permessi di visualizzazione (mostrando il progetto come una *Storia* logica priva di fogli orfani) e abilitando il download del file `.twbx`. La dashboard e' dinamica, se filtri per uno Stato o clicchi su un gruppo specifico di auto, l'intera pagina si aggiorna da sola mostrandoti solo quello che ti serve in quel momento. Le storie invece vanno ad evidenziare determinati pattern di questo progetto e per ognuna di esse ho allegato un analisi dettagliata.
+* **Deployment:** Ho pubblicato la cartella di lavoro su **Tableau Public**, configurando correttamente i permessi di visualizzazione (mostrando il progetto come una *Storia* logica) e abilitando il download del file `.twbx`. La dashboard e' dinamica, se filtri per uno Stato o clicchi su un gruppo specifico di auto, l'intera pagina si aggiorna da sola mostrandoti solo quello che ti serve in quel momento. Le storie invece vanno ad evidenziare determinati pattern di questo progetto e per ognuna di esse ho allegato un analisi dettagliata.
 
 
 ##### - Sono presenti immagini e visualizzazioni relative al progetto nella cartella Screenshots.
