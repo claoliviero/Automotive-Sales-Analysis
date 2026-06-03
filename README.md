@@ -682,7 +682,7 @@ select *from vw_depreciation_quartiles_withMAKE_STATE;
 
 # Dashboard Development , passaggio a Tableau
 
-Dopo aver ripulito e strutturato il database su MySQL, ho spostato il progetto su **Tableau Desktop** per trasformare i dati in un'interfaccia interattiva e parlante. Di seguito trovi la cronostoria passo-passo di come ho strutturato la pipeline di visualizzazione, dalle scelte di design fino alle ottimizzazioni tecniche avanzate.
+Una volta finito tutto  su MySQL, ho spostato il progetto su **Tableau Desktop** per trasformare i dati in un'interfaccia interattiva e parlante. Di seguito trovi la cronostoria passo-passo di come ho strutturato la pipeline di visualizzazione, dalle scelte di design fino alle ottimizzazioni tecniche avanzate.
 
 ---
 
@@ -711,10 +711,43 @@ Dopo aver ripulito e strutturato il database su MySQL, ho spostato il progetto s
 * **Azione:** Per variare la visualizzazione ed evitare i classici grafici a barre, ho implementato l'estensione nativa vizzu/LaDataViz per generare un **Donut Chart** dinamico focalizzato sulle quote di mercato degli Stati.
 
 #### 6. Integrazione di Estensioni Avanzate ( Grafico ad area polare (Polar Area))
-* **Azione:**  Anche qui per variare la visualizzazioe , ho implementato l'estensione nativa per generare un **Polar area** dinamico focalizzato sulle auto vendute da ogni Stato e il relativo prezzo medio di vendita.
+* **Azione:**  Anche qui per variare la visualizzazione , ho implementato l'estensione nativa per generare un **Polar area** dinamico focalizzato sulle auto vendute da ogni Stato e il relativo prezzo medio di vendita.
 
 #### 7. Debugging delle Estensioni Web e Pubblicazione Finale
-* **Deployment:** Ho pubblicato la cartella di lavoro su **Tableau Public**, configurando correttamente i permessi di visualizzazione (mostrando il progetto come una *Storia* logica priva di fogli orfani) e abilitando il download del file `.twbx`.
+* **Deployment:** Ho pubblicato la cartella di lavoro su **Tableau Public**, configurando correttamente i permessi di visualizzazione (mostrando il progetto come una *Storia* logica priva di fogli orfani) e abilitando il download del file `.twbx`. La dashboard e' dinamica, se filtri per uno Stato o clicchi su un gruppo specifico di auto, l'intera pagina si aggiorna da sola mostrandoti solo quello che ti serve in quel momento. Le storie invece vanno ad evidenziare determinati pattern di questo progetto e per ognuna di esse ho allegato un analisi dettagliata.
+
+
+##### - Sono presenti immagini e visualizzazioni relative al progetto nella cartella Screenshots.
+
+
+# 💡 Valore Aziendale e Considerazioni Finali (Business Value)
+
+Questo progetto non è stato solo un esercizio di scrittura di query o di design di grafici. L'obiettivo fin dall'inizio era prendere uin dataset di oltre 540.000 transazioni nel mercato dei veicoli e trasformarlo in un **asset strategico aziendale**. I dati , se presi e messi in fila nel modo giusto, raccontano una storia e aiutano a prendere importanti decisioni. <br>
+
+Mettendo in fila i marchi, il fatturato ovviamente è diverso per ogni brand e soprattutto non è diviso in modo equo. **Ford** da sola muove una montagna di soldi (oltre *1.3 miliardi di dollari*). Sapere esattamente quali sono i 10 modelli Ford che tirano di più l'azienda (trovati con le mie CTE) permette a un concessionario di fare scorte mirate.**I chilometri distruggono il valore**: usando la funzione *NTILE(4)*, ho "affettato" il dataset in quattro gruppi identici basati sui chilometri. Guardando i prezzi medi di ogni gruppo, si vede a colpo d'occhio la curva di svalutazione. Questo per un venditore è un'informazione importantissima, appunto per capire quando e a quanti chilometri poter vendere o acquistare un'auto. Molto utile anche il grafico temporale dove ho usato la *Media Mobile a 3 mesi (ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)*, fondamentale per vedere trend reali, stagionali e puliti.**Il Task 4.3** cerca invece auto in condizioni eccellenti, con pochi chilometri ma svendute a un prezzo inferiore di almeno il *20%* rispetto al loro valore reale di mercato *(MMR)*. Si può usare questa logica per intercettare all'istante le auto sottoprezzate alle aste, comprarle e rivenderle subito facendo margine.<br>
+
+Questo progetto mi è servito tantissimo per ribadire nuovamente l'importanza dell'intera pipeline della *data analysis*. Prendere dati grezzi e sporchi, pulirli e organizzarli *(MySQL)*, porsi le domande giuste e scrivere query (CTE, WINDOW FUNCTIONS) per trovare dove si nascondono anomalie o insight importanti. Costruire una dashboard interattiva su *Tableau* che sia utile per prendere decisioni e infine, ma non per importanza, tradurre i numeri in azioni pratiche, fondamentali per il business.
+
+# 🧠 Tecnologie e Competenze Utilizzate
+
+### 🗄️ Ingegnerizzazione e Analisi del Dato (Backend)
+* **MySQL:** Database management.
+* **Skills SQL:** Common Table Expressions (CTE), Funzioni Finestra (`ROW_NUMBER()`, `LAG()`, `NTILE()`), calcoli condizionali (`CASE WHEN`) e la creazione di viste (Views) ottimizzate.
+
+### 📊 Visual Analytics & Business Intelligence (Frontend)
+* **Tableau (Desktop & Public):** Lo strumento che ha trasformato i numeri in un'interfaccia parlante.
+* **Skills Tableau:** Scatter plot per i cluster, Diagramma di Pareto , Parametri e Filtri dinamici, Campi Calcolati , Donut Chart & Polar area dinamici.
+
+### 🌐 Deployment & Web Hosting
+* **''GitHub Pages:** Sfruttando GitHub Pages ho caricato la mia pagina portfolio (`index.html`), rendendo il case study interattivo accessibile a chiunque via web tramite un semplice link.
+
+
+## 📁 File del Progetto
+Per visionare il progetto vai nella cartella - progetto finale.sql dove sono presenti tutte le query complete.
+
+
+
+
 
 
 
