@@ -744,8 +744,11 @@ Questo progetto mi è servito tantissimo per ribadire nuovamente l'importanza de
 
 
 ## 📁 File del Progetto
-Per visionare il progetto vai nella cartella - progetto finale.sql dove sono presenti tutte le query complete.
+Per esplorare il progetto, puoi procedere in due modi: <br>
 
+*Dashboard interattiva*: Nella cartella **Tableau** trovi gli screenshot in anteprima e il link diretto per navigare nel progetto. <br>
+
+*Codice e Logica*: Nella cartella **Query SQL** sono disponibili tutti gli script completi pronti per l'analisi.
 
 
 
