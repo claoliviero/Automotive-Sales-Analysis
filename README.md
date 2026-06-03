@@ -362,7 +362,7 @@ order by total_sales_prices desc;
 
 ```
 
-**📈 LIVELLO 2: Analisi di Performance e Geografica** :
+**LIVELLO 2: Analisi di Performance e Geografica** :
 
 *Task 2.1:(MMR vs Selling Price)*: <br>
 L'MMR (Manheim Market Report) indica il valore stimato dell'auto. Chi siamo riusciti a vendere sopra il valore di mercato e chi abbiamo dovuto svendere?
@@ -406,6 +406,317 @@ order by cars_sold desc
 limit 10 ;
 
 ```
+
+**LIVELLO 3: Funzioni Finestra e Trend Temporali:**
+
+*Task 3.1: La Top 3 Assoluta per Brand (Window Functions)* <br>
+Andiamo a scoprire i primi 3 modelli più venduti per OGNI marca. Un semplice LIMIT 3 qui sarebbe fallito. Ho risolto da professionista usando le CTE e la funzione finestra ROW_NUMBER().
+
+```sql
+
+with general_date as (
+  select make,model,count(*) as cars_sold,sum(count(*)) over(partition by make) as total_brand_sales
+  from vehicle_sales_clean 
+  group by 1, 2
+),
+position as (
+  select make,model,cars_sold,total_brand_sales,row_number() over(partition by make order by cars_sold desc) as rank_position 
+  from general_date)
+select make, model, cars_sold, rank_position 
+from position
+where total_brand_sales >= 1000 and rank_position <= 3;
+
+```
+
+*Task 3.2: Il Trend Mese-su-Mese (Time Series & LAG)* <br>
+Per analizzare l'andamento temporale delle vendite, ho estratto anno e mese e ho sfruttato la funzione LAG() per confrontare il mese attuale con quello precedente, calcolando la variazione percentuale.
+
+```sql
+
+with general_date as
+(select make,count(*) as cars_sold,year(saledate) as year_sales,monthname(saledate) as month_name_sales,month(saledate) as month_number_sales from vehicle_sales_clean
+group by 1,3,4,5),
+general_last_month as
+(select make,year_sales,month_number_sales,month_name_sales,cars_sold,lag(cars_sold,1)over(partition by make order by year_sales,month_number_sales) as sales_last_month from general_date)
+select make,year_sales,month_number_sales,month_name_sales,cars_sold,sales_last_month,
+round(((cars_sold - sales_last_month) / sales_last_month) * 100, 2) AS percentage_change
+from general_last_month;
+
+```
+
+*Task 3.3: L'impatto dei Chilometri sul Deprezzamento* <br>
+Volevo dimostrare matematicamente come il chilometraggio distrugge il valore delle auto. Ho diviso l'odometro in 4 fasce e calcolato il prezzo medio di vendita per ciascuna.
+
+ ```sql
+
+select case 
+	when odometer <=50000 then '1_Low_km'
+    when odometer <=100000 then '2_Medium_km'
+    when odometer <=150000 then '3_High_km'
+    else '4_Very_high_km'
+end as 'km_bands' ,
+round(avg(sellingprice),2) as avg_selling_price from vehicle_sales_clean
+group by km_bands
+order by km_bands;
+
+ ```
+
+**LIVELLO 4 & 5: Analisi Avanzate di Business:**
+
+*Task 4.1: Le Quote di Mercato (Market Share % in California)* <br>
+Quanto "pesa" ogni singolo brand sul totale delle auto vendute nello stato della California (CA)?
+
+ ```sql
+
+with total_california as
+(select state,count(*) as cars_sold from vehicle_sales_clean where state = 'CA'),
+california_make as
+(select state,make,count(*) as cars_sold_california from vehicle_sales_clean
+where state ='CA'
+group by 1,2),
+percentage as
+(select cm.make,round((cm.cars_sold_california/t.cars_sold)*100,2) as percentage_by_state from total_california t join california_make cm 
+on t.state=cm.state)
+select make,percentage_by_state,row_number()over(order by percentage_by_state desc) as row_position_for_state from percentage
+limit 10 ;
+
+```
+
+*Task 4.2: La Media Mobile a 3 Mesi (Rolling Average)* <br>
+I grafici temporali a volte sono troppo altalenanti ("a zig-zag"). Ho implementato una media mobile a 3 mesi utilizzando la clausola ROWS BETWEEN 2 PRECEDING AND CURRENT ROW per smussare le fluttuazioni e mostrare il trend reale.
+
+```sql
+
+with generale as
+(select year(saledate) as year_sales,monthname(saledate) as month_name_sales,month(saledate) as month_number_sales,count(*) as cars_sold from vehicle_sales_clean
+group by 1,2,3)
+select year_sales,month_name_sales,month_number_sales,cars_sold,round(avg(cars_sold)over(order by year_sales asc,month_number_sales asc rows between 2 preceding and current row),0)
+as avg_mobile_3Month
+from generale ;
+
+```
+
+*Task 4.3: La Caccia all'Affare* <br>
+Ho scritto una query per identificare le auto "sottovalutate" sul mercato, utili per operazioni di flipping: ottime condizioni ($\ge 45$), basso chilometraggio ($< 40.000\text{ km}$) e uno sconto sul valore stimato superiore al 20%.
+
+```sql
+
+with discount as
+(select vin,make,model,mmr,sellingprice,odometer,condizione,(mmr - sellingprice) AS net_profit_potential,round(((mmr - sellingprice) / mmr) * 100, 2) AS discount_pct from vehicle_sales_clean
+having(sellingprice < mmr*0.8))
+select vin,make,model,mmr,sellingprice,net_profit_potential,discount_pct,condizione from discount
+where condizione>= 45.0 and odometer <40000 
+order by condizione desc ;
+
+```
+
+*Task 5: Analisi di pareto (Fatturato Cumulativo)* <br>
+Per capire l'accentramento del fatturato, ho calcolato il running total del profitto dei marchi associando la percentuale cumulata riga dopo riga. Questa logica è stata la base per creare il diagramma di Pareto su Tableau.
+
+```sql
+
+with general_profit as
+(select make,sum(sellingprice) as total_profit from vehicle_sales_clean group by 1 ),
+general_running as
+(select make,total_profit,sum(total_profit)over(order by total_profit desc) as running_total, SUM(total_profit) OVER () AS absolute_total from general_profit)
+select make,total_profit,running_total,round((running_total/absolute_total)*100,2) as cumulative_percentage from general_running;
+
+```
+
+**LIVELLO 6: Segmentazione Avanzata tramite Quartili (NTILE)** <br>
+Nell'ultimo step ho utilizzato la funzione statistica NTILE(4) per suddividere le auto del brand Ford (e successivamente l'intero dataset per ogni marca) in 4 gruppi uguali basati interamente sul chilometraggio, calcolandone i relativi range e prezzi medi di vendita.
+
+
+```sql
+
+-- Approccio 1: Analisi aggregata sui modelli Ford
+with generale as
+(select make,model,count(*) as total_cars,sum(odometer) as total_odometer,avg(sellingprice) as avg_sellingprice from vehicle_sales_clean 
+where make='ford' 
+group by 1,2),
+quartili as
+(select make,model,total_cars,total_odometer,ntile(4)over(order by total_odometer asc)as quartiles_km, avg_sellingprice from generale)
+select quartiles_km,count(model)as total_models,sum(total_cars) as tot_cars,min(total_odometer)as min_km,max(total_odometer)as max_km, 
+round(avg(avg_sellingprice),2)as avg_sellingprice from quartili 
+group by 1;
+
+-- Approccio 2: Analisi puntuale sui singoli veicoli Ford
+with quartili_singoli as 
+(select make,model,odometer,sellingprice,
+ntile(4) over(order by odometer asc) as quartile_km from vehicle_sales_clean
+where make = 'ford' 
+    and odometer > 0)
+select quartile_km,count(*) as tot_cars,min(odometer) as min_singolo_km,max(odometer) as max_singolo_km,round(avg(sellingprice), 2) as prezzo_medio_vendita
+from quartili_singoli
+group by 1
+order by 1;
+
+-- Approccio 3: Estensione universale su tutte le auto del dataset tramite PARTITION BY
+with quartili_singoli as 
+(select make,model,odometer,sellingprice,
+ntile(4) over(partition by make order by odometer asc) as quartile_km from vehicle_sales_clean
+    where odometer is not null
+    and odometer > 0)
+select quartile_km,count(*) as tot_cars,min(odometer) as min_singolo_km,max(odometer) as max_singolo_km,round(avg(sellingprice), 2) as prezzo_medio_vendita
+from quartili_singoli
+group by 1
+order by 1;
+
+```
+
+## 🗄️ Fase 2: Visual Analytics & Dashboarding (MySQL + Tableau)
+
+Una volta sistemati i dati con SQL, ho creato delle viste, che andavano a fare riferimento alle query precedenti per essere ri-utilizzate in qualsiasi momento senza scrivere nuovamente il codice e possibilmente adattarle a nuovi contesti. Una volta fatto ciò, ho collegato tutto a Tableau per creare una dashboard interattiva. Ho cercato di progettarla pensando a chi deve prendere decisioni in azienda.
+
+```sql
+
+-- ---------------------------------------CREAZIONE VISTE PER TABLEAU E RI-UTILIZZO CODICE PER ALTRE ANALISI DETTAGLIATE SU MY SQL------------------------------------------------
+-- VISTA  1 per ogni stato e la sua percentuale per ogni marca e auto venduta, il suo impatto.-- ---------------------------------------
+CREATE VIEW vw_market_share_state AS
+select state,make,count(*) as cars_sold,ROUND((COUNT(*) / SUM(COUNT(*)) OVER(PARTITION BY state)) * 100, 2) 
+as state_market_share_pct
+from vehicle_sales_clean
+where state is not null and make is not null
+group by state, make;
+
+SELECT*from vw_market_share_state;
+
+---------------------------------------------------------- Vista  2 media mobile di auto vendute per mese e anno ---------------------------------------------------------------------
+CREATE VIEW vw_sales_trend_rolling as
+(with generale as
+(select year(saledate) as year_sales,monthname(saledate) as month_name_sales,month(saledate) as month_number_sales,count(*) as cars_sold from vehicle_sales_clean
+group by 1,2,3)
+select year_sales,month_name_sales,month_number_sales,cars_sold,round(avg(cars_sold)over(order by year_sales asc,month_number_sales asc rows between 2 preceding and current row),0)
+as avg_mobile_3Month
+from generale);
+
+SELECT*from vw_sales_trend_rolling;
+
+
+-- ------------------------------------- Vista 3 , contiene tutte le auto con i relativi vin vendute  a un prezzo di mercato inferiore---------------------------------------------------------
+
+CREATE VIEW vw_arbitrage_opportunities AS
+(with discount as
+(select vin,make,model,mmr,sellingprice,odometer,condizione,(mmr - sellingprice) AS net_profit_potential,round(((mmr - sellingprice) / mmr) * 100, 2) AS discount_pct from vehicle_sales_clean
+having(sellingprice < mmr*0.8))
+select vin,make,model,mmr,sellingprice,net_profit_potential,discount_pct,condizione from discount
+where condizione>= 45.0 and odometer <40000 
+order by condizione desc);
+
+SELECT*from vw_arbitrage_opportunities ;
+
+------------------------------------- Vista 4, pareto revenue, query che mostra la regola di parete, ovvero l'80 % dei guadagni viene dal 20% dei prodotti. La tabbella afferma cio -----------------------------
+use automotive_analytics;
+CREATE VIEW vw_pareto_revenue AS
+(with general_profit as
+(select make,sum(sellingprice) as total_profit from vehicle_sales_clean group by 1 ),
+general_running as
+(select make,total_profit,sum(total_profit)over(order by total_profit desc) as running_total, sum(total_profit) over () AS absolute_total from general_profit)
+select make,total_profit,running_total,round((running_total/absolute_total)*100,2) as cumulative_percentage from general_running);
+
+SELECT*from vw_pareto_revenue ;
+
+-------------------------------- Vista 5  abbiamo 4 quartili divisi per chilometri percorsi di ogni auto, con il suo min e max di chilometri per ogni quartile e il relativo prezzo di vendita ----------
+
+CREATE VIEW vw_depreciation_quartiles AS
+(with quartili_singoli as 
+(select make,model,odometer,sellingprice,
+ntile(4) over(partition by make order by odometer asc) as quartile_km from vehicle_sales_clean
+    where odometer is not null
+    and odometer > 0)
+select quartile_km,count(*) as tot_cars,min(odometer) as min_singolo_km,max(odometer) as max_singolo_km,round(avg(sellingprice), 2) as prezzo_medio_vendita
+from quartili_singoli
+group by 1
+order by 1);
+
+SELECT*from vw_depreciation_quartiles ;
+
+
+-- ---------------------------------------------------------------------VIsta 6, identica alla 5 ma aggiungendo le varie marche ( make) -------------------------------------------------
+CREATE VIEW vw_depreciation_quartiles_make AS
+(with quartili_singoli as 
+(select make,model,odometer,sellingprice,
+ntile(4) over(partition by make order by odometer asc) as quartile_km from vehicle_sales_clean
+    where odometer is not null
+    and odometer > 0)
+select quartile_km,make,count(*) as tot_cars,min(odometer) as min_singolo_km,max(odometer) as max_singolo_km,round(avg(sellingprice), 2) as prezzo_medio_vendita
+from quartili_singoli
+group by 1,2
+order by 1);
+
+SELECT*from vw_depreciation_quartiles_make ;
+
+
+-- ----------------------------------------------------VISTA 7 , UGUALE al market share state ma senza make ----------------------------
+
+CREATE VIEW vw_market_share_for_state AS
+(with generale as
+(select state, count(*) as cars_sold, round(avg(sellingprice),2) as avg_selling_price
+from vehicle_sales_clean
+group by 1)
+select state,cars_sold,avg_selling_price,round((cars_sold/ SUM(SUM(cars_sold)) OVER())* 100,2) AS state_market_share_pct  from generale 
+group by 1);
+
+select*from vw_market_share_for_state ;
+
+
+
+
+
+----------------------------------------------- vista 8-  simile alla 6 ma con aggiunta di state, questo utile per le fasi successive su tableau----------------------
+
+CREATE VIEW vw_depreciation_quartiles_withMAKE_STATE as
+(with quartili_singoli as 
+(select state,make,model,odometer,sellingprice,
+ntile(4) over(partition by make order by odometer asc) as quartile_km from vehicle_sales_clean
+    where odometer is not null
+    and odometer > 0)
+select state,quartile_km,make,count(*) as tot_cars,min(odometer) as min_singolo_km,max(odometer) as max_singolo_km,round(avg(sellingprice), 2) as prezzo_medio_vendita
+from quartili_singoli
+group by 1,2,3
+order by 1);
+
+select *from vw_depreciation_quartiles_withMAKE_STATE;
+
+```
+
+# Dashboard Development , passaggio a Tableau
+
+Dopo aver ripulito e strutturato il database su MySQL, ho spostato il progetto su **Tableau Desktop** per trasformare i dati in un'interfaccia interattiva e parlante. Di seguito trovi la cronostoria passo-passo di come ho strutturato la pipeline di visualizzazione, dalle scelte di design fino alle ottimizzazioni tecniche avanzate.
+
+---
+
+*Passaggi e Pipeline di Sviluppo*
+
+#### 1. Connessione ai Dati e Ottimizzazione del Caricamento
+* **Azione:** Ho importato le viste SQL aggregate precedentemente create su MySQL.
+* **Scelta Tecnica:** Invece di lavorare con una connessione *Live* (che avrebbe rallentato l'interfaccia a causa delle oltre 539k righe), ho generato un **Estratto di dati (.hyper)**. Questo ha azzerato la latenza di calcolo, garantendo filtri istantanei nella dashboard finale.
+
+#### 2. Definizione del Layout e Strategia UX/UI (Design System)
+* **Azione:** Ho impostato la struttura grafica dell'interfaccia optando per un **Dark Canvas** (sfondo antracite scuro).
+
+#### 3. Sviluppo delle KPI Cards Principali (Executive Overview)
+* **Azione:** Ho posizionato nella parte alta della dashboard i tre indicatori chiave di prestazione (KPI) aziendali:
+    * **Volumi Totali:** Conteggio esatto delle transazioni attive (**539.988**).
+    * **Prezzo Medio Ponderato Reale:** Calcolato tramite formula DAX per superare le distorsioni della media semplice (**13.691 €**).
+ 
+#### 4. Costruzione del Core Analitico (Mappa & Scatter Plot)
+* **Mappa Geografica Interattiva:** Ho inserito una mappa del mercato nordamericano per visualizzare la distribuzione geografica delle vendite. La mappa è stata configurata non solo come grafico passivo, ma come un vero e proprio "pannello di comando" (Filtro di origine globale).
+* **Scatter Plot Prezzo/Volume:** Ho tracciato la relazione tra volumi venduti e prezzo medio per brand. Questo mi ha permesso di isolare visivamente i cluster di mercato: il quadrante "alto volume/basso prezzo" (dove dominano Ford e Chevrolet) e le nicchie "alto valore/basso volume".
+
+#### 5. Implementazione del Diagramma di Pareto (Analisi 80/20) e Viz-in-Tooltip
+* **Azione:** Ho strutturato un grafico a doppio asse (barre per i volumi e linea continua per la percentuale cumulata) per applicare la legge di Pareto.
+
+#### 6. Integrazione di Estensioni Avanzate (Il Donut Chart)
+* **Azione:** Per variare la visualizzazione ed evitare i classici grafici a barre, ho implementato l'estensione nativa vizzu/LaDataViz per generare un **Donut Chart** dinamico focalizzato sulle quote di mercato degli Stati.
+
+#### 6. Integrazione di Estensioni Avanzate ( Grafico ad area polare (Polar Area))
+* **Azione:**  Anche qui per variare la visualizzazioe , ho implementato l'estensione nativa per generare un **Polar area** dinamico focalizzato sulle auto vendute da ogni Stato e il relativo prezzo medio di vendita.
+
+#### 7. Debugging delle Estensioni Web e Pubblicazione Finale
+* **Deployment:** Ho pubblicato la cartella di lavoro su **Tableau Public**, configurando correttamente i permessi di visualizzazione (mostrando il progetto come una *Storia* logica priva di fogli orfani) e abilitando il download del file `.twbx`.
+
+
 
 
 
