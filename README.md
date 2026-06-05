@@ -319,7 +319,7 @@ select year,make,model,odometer,mmr from vehicle_sales_clean
 where odometer < 50 or odometer >300000 
 order by odometer asc ;
 
-#Scrivi un'altra query per trovare i prezzi di vendita assurdi (es. sellingprice sotto i 500$ o sopra i 100.000$).
+#Scrivo un'altra query per trovare i prezzi di vendita assurdi (es. sellingprice sotto i 500$ o sopra i 100.000$).
 select year,make,model,odometer,mmr,sellingprice from vehicle_sales_clean
 where sellingprice <500 or sellingprice >150000
 order by sellingprice asc ,odometer asc ;
@@ -606,7 +606,7 @@ order by condizione desc);
 
 SELECT*from vw_arbitrage_opportunities ;
 
-------------------------------------- Vista 4, pareto revenue, query che mostra la regola di parete, ovvero l'80 % dei guadagni viene dal 20% dei prodotti. La tabbella afferma cio -----------------------------
+------------------------------------- Vista 4, pareto revenue, query che mostra la regola di pareto, ovvero l'80 % dei guadagni viene dal 20% dei prodotti. La tabbella afferma cio -----------------------------
 use automotive_analytics;
 CREATE VIEW vw_pareto_revenue AS
 (with general_profit as
@@ -683,7 +683,7 @@ select *from vw_depreciation_quartiles_withMAKE_STATE;
 
 # Dashboard Development , passaggio a Tableau
 
-Una volta finito tutto  su MySQL, ho spostato il progetto su **Tableau Desktop** per trasformare i dati in un'interfaccia interattiva e parlante. Di seguito trovi la cronostoria passo-passo di come ho strutturato la pipeline di visualizzazione, dalle scelte di design fino alle ottimizzazioni tecniche avanzate.
+Una volta finito tutto  su MySQL, ho spostato il progetto su **Tableau Desktop** per trasformare i dati in un'interfaccia interattiva e parlante. Di seguito trovi la cronostoria passo-passo di come ho strutturato la pipeline di visualizzazione.
 
 ---
 
@@ -723,7 +723,7 @@ Una volta finito tutto  su MySQL, ho spostato il progetto su **Tableau Desktop**
 
 # 💡 Valore Aziendale e Considerazioni Finali (Business Value)
 
-Questo progetto non è stato solo un esercizio di scrittura di query o di design di grafici. L'obiettivo fin dall'inizio era prendere uin dataset di oltre 540.000 transazioni nel mercato dei veicoli e trasformarlo in un **asset strategico aziendale**. I dati , se presi e messi in fila nel modo giusto, raccontano una storia e aiutano a prendere importanti decisioni. <br>
+Questo progetto non è stato solo un esercizio di scrittura di query o di design di grafici. L'obiettivo fin dall'inizio era prendere un dataset di oltre 540.000 transazioni nel mercato dei veicoli e trasformarlo in un **asset strategico aziendale**. I dati , se presi e messi in fila nel modo giusto, raccontano una storia e aiutano a prendere importanti decisioni. <br>
 
 Mettendo in fila i marchi, il fatturato ovviamente è diverso per ogni brand e soprattutto non è diviso in modo equo. **Ford** da sola muove una montagna di soldi (oltre *1.3 miliardi di dollari*). Sapere esattamente quali sono i 10 modelli Ford che tirano di più l'azienda (trovati con le mie CTE) permette a un concessionario di fare scorte mirate.**I chilometri distruggono il valore**: usando la funzione *NTILE(4)*, ho "affettato" il dataset in quattro gruppi identici basati sui chilometri. Guardando i prezzi medi di ogni gruppo, si vede a colpo d'occhio la curva di svalutazione. Questo per un venditore è un'informazione importantissima, appunto per capire quando e a quanti chilometri poter vendere o acquistare un'auto. Molto utile anche il grafico temporale dove ho usato la *Media Mobile a 3 mesi (ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)*, fondamentale per vedere trend reali, stagionali e puliti.**Il Task 4.3** cerca invece auto in condizioni eccellenti, con pochi chilometri ma svendute a un prezzo inferiore di almeno il *20%* rispetto al loro valore reale di mercato *(MMR)*. Si può usare questa logica per intercettare all'istante le auto sottoprezzate alle aste, comprarle e rivenderle subito facendo margine.<br>
 
