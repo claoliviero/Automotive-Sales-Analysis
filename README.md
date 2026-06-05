@@ -718,7 +718,7 @@ Una volta finito tutto  su MySQL, ho spostato il progetto su **Tableau Desktop**
 * **Deployment:** Ho pubblicato la cartella di lavoro su **Tableau Public**, configurando correttamente i permessi di visualizzazione (mostrando il progetto come una *Storia* logica) e abilitando il download del file `.twbx`. La dashboard e' dinamica, se filtri per uno Stato o clicchi su un gruppo specifico di auto, l'intera pagina si aggiorna da sola mostrandoti solo quello che ti serve in quel momento. Le storie invece vanno ad evidenziare determinati pattern di questo progetto e per ognuna di esse ho allegato un analisi dettagliata.
 
 
-##### - Sono presenti immagini e visualizzazioni relative al progetto nella cartella Screenshots.
+##### - Sono presenti immagini e visualizzazioni relative al progetto nella cartella Tableau.
 
 
 # 💡 Valore Aziendale e Considerazioni Finali (Business Value)
